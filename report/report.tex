@@ -1,4 +1,9 @@
 \documentclass[12pt]{article}
+\usepackage[left=1in,headheight=48pt]{geometry}
+\usepackage{graphicx}
+\graphicspath{{Images/}}
+\usepackage{wrapfig}
+\usepackage{comment}
 \usepackage{listings}
 \usepackage{xcolor}
  
@@ -13,10 +18,10 @@
     keywordstyle=\color{magenta},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
-    %basicstyle=\ttfamily\footnotesize,
     basicstyle=\fontsize{10}{12}\ttfamily,
     breakatwhitespace=false,
-    breaklines=true,
+    %breaklines=true,
+    breaklines=false,
     captionpos=b,
     keepspaces=true,
     numbers=left,
@@ -36,28 +41,34 @@
 \begin{document}
 
 \maketitle
-\abstract{This is a project who's goal is to track fish for the end goal of performing behavior analysis on them. To do this tracking, we first need to unswap the positions of the fish between frames, which first requires that we take the fishes positions in the array and swap them.}
+\abstract{The end goal of this project is to perform unswapping on fish tracking for the end goal of feeding data into behavior analysis on the fishes. To do this tracking, we first need to make sure that the fish maintain continuity between frames, which we do by unswapping the positions of the fish between frames for nonoverlapping ranges, and by comparing the unique identifier of the brightness on different sides of overlapping ranges.}
 
 \section{Introduction}
 
-The end goal of this project is to have a piece of software that will take a video of fishes and return analysis on their behavior. To do this we must first have software that can track the position of any number of fishes within a video at any given moment. This is approximately what the traktor\_revised library does for us, however this library is prone to sqeific type of error which is to swap the positions of the fishes between frames.
-
-\section{Technical Introduction}
-
-To achieve our goal of getting usable information out of the videos, we are going to read the video data, and transform the subset of that data that is recognised as fishes by our parsing library. We are then going to categorise this data into the individual fishes, and transform that into something that is usable by our sorting algorithms. We are then going to check where the parsing software has swapped the positions of the two fishes between frames, given that the parsing software doesn't keep continuity between frames, and use that to unswap the fishes. This is necessary because the software in question records the positions of the fish between each frame separately \textbf{image of two frames fo fish}, which can mean that the software doesn't have continuity. \textbf{fish being swapped example.} To make sure that we are able to tell the fish apart, we must first find a way to identify them uniquely, which in this case is their adverage brightness.
-
-%\How does this code allow us to answer this question, not so much what does the code do. Start with describing the output of tractor\_revised, but doesn't keep track of identity. What kind of data do we get out of tractor\_revised, what type of data do we want at the end(move from results?, intro to results?). What are the two ways in which it could swap(in nonoverlapping ranges(briefly explain on axis and off axis distances), and across nonoverlapping ranges(get too close together and can't tell apart. Talk about how need unique id (brightness))). Include sketch here.
+The end goal of this project is to have a piece of software that will take a video of fishes and return the unswapped positions of the fishes so that we can feed it to software that performs analysis on their behavior. To do this, we must first have software that can track the position of any number of fishes within a video at any given moment. This is approximately what the traktor\_revised library does for us, however, this library is prone to a specific type of error, which is to swap the positions of the fishes between frames.
+\begin{figure}[h] 
+	\centering
+	\includegraphics[width=.5\textwidth]{fish1}
+	\caption{}
+\end{figure}
+\textbf{Figure 1} There are two methods of unswapping which we will deploy. The first is during frame groups(ranges) in which the software reports that there are two fishes, in which we will compare the distances between the fishes as if they were both swapped and unswapped, and compute which value is smaller.
+\begin{figure}[h] 
+	\centering
+	\includegraphics[width=.5\textwidth]{fish2}
+	\caption{}
+\end{figure}
+\textbf{Figure 2} If that doesn't work due to the software returning the output that there is only one fish due to the fish being in the same place and the software being unable to tell the fish apart, we look for an unique identifier for the fishes, which in this case is their average brightness. We then compare the similarity of the 2d histograms to determine the identity of the fish. \par
 
 \section{Results}
 
 \subsection{Data Structure}
-The first thing that we did was to parse the fish into a readable format, which in our case was using the tractor\_revised library to take the raw pil(python image library, the default python library for dealing with images, which is a rather large array of size equal to the number of frames) data from the video and convert it to a [n,m,o,3] array, which has size of the number of frames by number of the fish by the number of pixels in each fish, by a triplet consisting of the x coordinate of the fish, the y coordinate, and the greyscale rgb value in the form [x,y,g]. 
+The first operation performed was parsing the video and converting it to a [n,m,o,1] array, which has size of ``the number of frames'' by ``number of the fish'' by ``the number of pixels in each fish'', by ``a triplet consisting of the x coordinate of the fish, the y coordinate, and the greyscale rgb value in the form [x,y,g]''. 
 
 \subsection{Identifying Nonoverlapping Ranges}
 
-%Discuss how code relates to task at hand better, currently discussing code too much.
+Since the primary method of unswapping does not work in frames in which there is only one fish returned, the first step is to find the frames in which the software is reading that there are two fish, so that we can only run the unswapping code on those frames. We do this by running through every frame and returning the ones that fit our criteria in a list that we can then reference.
 
-Once we have the data in a state that we can work with, the next step is to find the frames in which the software is reading that there are two fish, so that we can begin unswapping them. Since any attempt to do distance analysis will fail when the software only returns one fish, which it does in the overlapping sections, we need to create a list of the nonoverlapping ranges to restrict ourselves to.
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 i2=0
 nonOverlappingRange=[]
@@ -72,8 +83,16 @@ while i2<len(fish):
     nonOverlappingRange.append([i1,i2])
 print(nonOverlappingRange)
 \end{lstlisting}
+\end{minipage}
 
-We then take the data and find the mean of each fish to allow us to perform analysis on a singular point instead of trying to perform analysis on the entirety of the fish, due to how much easier it is to compute distances that way. \textbf{sketch here?}
+We then take the data and find the center of each fish to allow us to perform analysis on a singular point instead of trying to perform analysis on the entirety of the fish, due to how much easier it is to compute distances in that method. 
+\begin{figure}[h] 
+	\centering
+	\includegraphics[width=.5\textwidth]{fish3}
+	\caption{}
+\end{figure}\textbf{Figure 3}
+
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 fishMean=[]
 for i in range(len(fish)):
@@ -84,17 +103,20 @@ for i in range(len(fish)):
 fishMean=np.asarray(fishMean)
 #fishMean[i.j.k] is the coordinate of k of the position of fish j in frame i
 \end{lstlisting}
+\end{minipage}
 
-\subsection{Unswapping the fish}
+\subsection{Distance Based Unswapping}
 
-Once we have the fish imported and then converted into a format that is easier to work with, we then can start to unswap the fish, however we will be restricting ourselves to the nonoverlapping ranges, since comparing the fish frame-to-frame for unswapps is pointless when the software only returns one fish. The first step to unswapping the fishes is to calculate which frames are swapped by comparing the on and off axis distances between the two fishes at each consecutive frame pair. To do this, we offload most of the actual calculation to function for simplicity's sake.
+Once we have the fish imported and then converted into a format that is easier to work with, we then can start to unswap the fish. However, we will be restricting ourselves to the nonoverlapping ranges, since comparing the fish frame-to-frame for unswapps is pointless when the software only returns one fish. The first step to unswapping the fishes is to calculate which frames are swapped by comparing the distances between the two fishes at each consecutive frame pair as if they were both cases and returning the lesser of the two distances as the one that is the correct fish continuity. To do this, we offload most of the actual calculation to a function that puts the 4 possible distances into a matrix and uses numpy's linalg.norm to compare the iterations.
+
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 def swapStatus(pos,i):
     '''
     Detect swaps between consecutive frames based on proximity.
     
     Input:
-        pos:Postionts. Array with shape (Nframes,Nfish,Ndimensions),
+        pos: Positions. Array with shape (Nframes,Nfish,Ndimensions),
         i: Frame index. Int.
     
     Output:
@@ -115,40 +137,52 @@ def swapStatus(pos,i):
     else:
         return -1
 \end{lstlisting}
+\end{minipage}
+
+This function returns a value of  either 0(Maintaining continuity), 1(Swapped), or 2(Overlapping region) that we then can reference later.
 
 We then can call on the function to return a list of the swap status of the fishes.
+
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 statusList=[]
 for i in range(len(fishMean)-1):
     statusList.append(swapStatus(fishMean,i))
 print(collections.Counter(statusList))
 \end{lstlisting}
+\end{minipage}
 
-This then allows us to start unswapping the fish. To do this we first have to structure the data in a format that allows for unswapping. The format that is easiest for us to work with in this case is an array of the indexes of the frames where the overlapping occurs, which we then can use by aplying a swapping rule to fishMean directly.
+This then allows us to start unswapping the fish. To do this we first have to find the start and end points for the swap, since if we were to unswap at every point we would just reduce the number of swaps by one. However, we do get to say that every other unswap is a terminus, at least within nonoverlapping ranges, for the sake of simplicity. The next step is to structure the data in a format that allows for unswapping. The format that is easiest for us to work with (in this case) is an array of the indexes of the frames where the overlapping occurs, which we then can use by applying a swapping rule to fishMean directly.
+
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 posU=fishMean.copy()
 for j,i in I:
     posU[j:i,:]=pos[j:i,[1,0]]
 \end{lstlisting}
+\end{minipage}
 
 At this point, all the data inside the nonoverlapping regions has been unswapped, and a simple check with collections.Counter reveals that we have been successful in that regard.
+
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 status=[]
 for i in range(len(posU)-1):
     status.append(swapStatus(posU,i))
 print(collections.Counter(status))
 \end{lstlisting}
+\end{minipage}
 \begin{verbatim}
 Counter({0: 49283, 2: 1930})
 \end{verbatim}
 
-\subsection{Across Nonoverlapping Ranges}
+\subsection{Texture-based Unswapping}
 The next step of this process is to find the frame segments in which the program swaps the fish during the overlapping regions. To do this we must construct 2d histograms of the sum and difference of brightness values for each fish during each nonoverlapping range, which we then can take the on and off axis distance of to determine swaps.
 
-\textbf{Include 2d histograms?}
+%\textbf{Include 2d histograms?}
 
 \section{Conclusion}
 
-The end result of the current state of this project is that we have a program that can take the input of a video of fish, and return the positions of each fish at each frame correctly, at least for two fish. The code as currently stands still needs minor modifications to be fully scalable, though this will probably be implemented at a later time. This is a starting point for any and all analysis that can be performed on the fish, including schooling and predictive behaviour analysis.
+The end result of the current state of this project is that we have a program that can take the input of a video of fishes, and return the positions of each fish at each frame correctly, at least for two fish. This is a starting point for any and all analysis that can be performed on the fishes, including schooling and predictive behaviour analysis. The next steps for this project include writing the code that unswapps over overlapping ranges, and eventually scaling the project to more than 2 fishes.
 
 \end{document}
