@@ -10,3 +10,4 @@ sortedFish.pik
 __pycache__/tracktor_revised.cpython-37.pyc
 .ipynb_checkpoints/fishOverlapManualCheck-checkpoint.ipynb
 frames/
+.ipynb_checkpoints/overlapCheck-checkpoint.txt
