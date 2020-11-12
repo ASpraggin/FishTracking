@@ -1,0 +1,8 @@
+Initializing
+Tank loaded from tracker/output\SF_n2_t2_3113\tank.pik
+Tracking: 00:00:00.00,  0.0% complete
+Video capture released
+Failed
+<class 'AttributeError'>
+type object 'Tracker' has no attribute 'new'
+<traceback object at 0x00000181AC3807C8>
