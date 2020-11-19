@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.10) (preloaded format=pdflatex 2020.10.31)  19 NOV 2020 15:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.10) (preloaded format=pdflatex 2020.10.31)  19 NOV 2020 16:03
 entering extended mode
 **./report.tex
 (report.tex
@@ -232,27 +232,27 @@ Overfull \hbox (75.17442pt too wide) in paragraph at lines 53--82
 [1
 
 {C:/Users/Ari/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2]
-(report.aux) ) 
+[3] (report.aux) ) 
 Here is how much of TeX's memory you used:
  4073 strings out of 480203
- 56518 string characters out of 2878027
- 708582 words of memory out of 3000000
+ 56676 string characters out of 2878027
+ 709597 words of memory out of 3000000
  20639 multiletter control sequences out of 15000+200000
  540419 words of font info for 47 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 66i,6n,72p,896b,1393s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publi
-c/amsfonts/cm/cmbx10.pfb><C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/
-type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Ari/AppData/Local/Programs/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Ari/AppData/Local/Progr
-ams/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Ari/AppData/L
-ocal/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Ari
-/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/
-Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt
-10.pfb>
-Output written on report.pdf (2 pages, 92344 bytes).
+ 66i,6n,72p,915b,1393s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmbx10.pfb><C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Ari/AppData/Local/Programs/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Ari/AppData/Local/P
+rograms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Ari/AppDa
+ta/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users
+/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb>
+<C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
+cmtt10.pfb>
+Output written on report.pdf (3 pages, 93645 bytes).
 PDF statistics:
- 37 PDF objects out of 1000 (max. 8388607)
+ 40 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

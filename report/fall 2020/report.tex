@@ -48,7 +48,7 @@
 
 \section{Methods}
 
-The basis of this work is going to be the videos of fish swimming in a tank. One of the things that quickly becomes apparent is that the fish are present as a series of dark pixels against a white background, which we can then feed to a different software (in this case trilab-tracker) to generate a list of pixels that compose the fishes for tracking. Once we have this data for the locations of the fishes, we can determine the areas in which the software detects only one fish, which is the overlapping regions in which errors can occur, which is the areas that we want to concentrate on. Once we have these overlapping regions, we can begin performing operations on the fish during them, firstly the naive approach of tracking the distance between the fish to determine if there was a swap, by comparing the on and off axis distances of the two possible positions of the fish.
+The basis of this work is going to be the videos of fish swimming in a tank. One of the things that quickly becomes apparent is that the fish are present as a series of dark pixels against a white background, which we can then feed to a different software (in this case trilab-tracker) to generate a list of pixels that compose the fishes for tracking. Once we have the fish in an array form for ease of opperation, we can begin performing an initial unswap by tracking the distance between the fish to determine if there was a swap, by comparing the on and off axis distances of the two possible positions of the fish. The downside of this approch is that it only works in areas in which the tracker returns that there is two fish, so we will first need to determine what regions are overlapping and nonoverlapping. Once we have these nonoverlapping regions, we can begin performing the swap check.
 
 \begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
@@ -80,10 +80,13 @@ def swapStatus(pos,i):
 \end{lstlisting}
 \end{minipage}
 
-Once we have this measure of swapping between the beginning and end of the overlap range, we can both perform an initial unswapping and check any future unswapping attempts against this baseline.  
+Once we have this data for the locations of the fishes, we can determine the areas in which the software detects only one fish, which is the overlapping regions in which errors can occur, which is the areas that we want to concentrate on.
+
+Since we have a baseline unswap established we are ready to perform a more heavy duty unswap. The technique we are using for unswapping is to compare the histograms of the brightness of the fishes before and after an overlapping range, as proposed by the paper on idTracker.
 
 \section{Results}
 
+Something here about how it needs to be more accurate. 
 
 \section{Discussion}
 
