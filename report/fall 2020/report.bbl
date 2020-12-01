@@ -1,0 +1,95 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{idTracker}{article}{useprefix=true}
+      \name{author}{5}{}{%
+        {{hash=94dcb04a6fbedbe4594ee9b3a6c4dd72}{%
+           family={Pérez-Escudero},
+           familyi={P\bibinithyphendelim E\bibinitperiod},
+           given={Alfonso},
+           giveni={A\bibinitperiod}}}%
+        {{hash=5272875a974f41f58d73d0f1f8f052e3}{%
+           family={Vicente-Page},
+           familyi={V\bibinithyphendelim P\bibinitperiod},
+           given={Julián},
+           giveni={J\bibinitperiod}}}%
+        {{hash=58d0bfddbef857d3537eaa3f8e11b6f8}{%
+           family={Hinz},
+           familyi={H\bibinitperiod},
+           given={Robert\bibnamedelima C.},
+           giveni={R\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=fe12e8f4d0cebc94a6abab74266c980a}{%
+           family={Arganda},
+           familyi={A\bibinitperiod},
+           given={Sara},
+           giveni={S\bibinitperiod}}}%
+        {{hash=68267ed9494194db9d065f48d71c04cb}{%
+           family={Polavieja},
+           familyi={P\bibinitperiod},
+           given={Gonzalo\bibnamedelima G.},
+           giveni={G\bibinitperiod\bibinitdelim G\bibinitperiod},
+           prefix={de},
+           prefixi={d\bibinitperiod}}}%
+      }
+      \strng{namehash}{e2f785492f417b6686c33751a2831aa7}
+      \strng{fullhash}{b89450c31f5c75d9e3fef02989bbf240}
+      \strng{bibnamehash}{e2f785492f417b6686c33751a2831aa7}
+      \strng{authorbibnamehash}{e2f785492f417b6686c33751a2831aa7}
+      \strng{authornamehash}{e2f785492f417b6686c33751a2831aa7}
+      \strng{authorfullhash}{b89450c31f5c75d9e3fef02989bbf240}
+      \field{sortinit}{P}
+      \field{sortinithash}{bb5b15f2db90f7aef79bb9e83defefcb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{The transformation of individual animal images acquired from videos into unique reference fingerprints allows for robust tracking of individuals in groups and reidentification of individuals between sightings and across different videos.}
+      \field{issn}{1548-7105}
+      \field{journaltitle}{Nature Methods}
+      \field{langid}{english}
+      \field{month}{7}
+      \field{number}{7}
+      \field{shorttitle}{{{idTracker}}}
+      \field{title}{{{idTracker}}: Tracking Individuals in a Group by Automatic Identification of Unmarked Animals}
+      \field{urlday}{25}
+      \field{urlmonth}{6}
+      \field{urlyear}{2020}
+      \field{volume}{11}
+      \field{year}{2014}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{743\bibrangedash 748}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1038/nmeth.2994
+      \endverb
+      \verb{file}
+      \verb C\:\\Users\\arisp\\Zotero\\storage\\E3VKZR4I\\Pérez-Escudero et al. - 2014 - idTracker tracking individuals in a group by auto.pdf;C\:\\Users\\arisp\\Zotero\\storage\\U7JK438W\\nmeth.html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.nature.com/articles/nmeth.2994
+      \endverb
+      \verb{url}
+      \verb https://www.nature.com/articles/nmeth.2994
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
