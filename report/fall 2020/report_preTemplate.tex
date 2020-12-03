@@ -1,7 +1,5 @@
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{setspace}
-
+\documentclass[12pt]{article}
+\usepackage[left=1in,headheight=48pt]{geometry}
 \usepackage{graphicx}
 \graphicspath{{images/}}
 \usepackage{wrapfig}
@@ -9,9 +7,9 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{float}
-\usepackage[style=numeric]{biblatex}
+\usepackage{biblatex}
 \addbibresource{fish.bib}
-
+ 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
@@ -39,152 +37,16 @@
  
 \lstset{style=mystyle}
 
-%\usepackage[letter,margin=1.5in]{geometry}
-%\addtolength{\rightmargin}{-0.5in}
-%\addtolength{\textwidth}{0.5in}
-%\addtolength{\oddsidemargin}{-.875in}
-%\addtolength{\evensidemargin}{-.875in}
-%\addtolength{\textheight}{1.75in}
-
-\makeatletter
-\renewcommand\section{\clearpage\newpage\@startsection {section}{1}{\z@}%
-	{-3.5ex \@plus -1ex \@minus -.2ex}%
-	{2.3ex \@plus.2ex}%
-	{\normalfont\Large\bfseries}}
-\makeatother
+\title{Report for End of Year on Progress on Fish Tracking Software}
+\author{Ari Spraggins}
+\date{2020-11-19}
 
 \begin{document}
 
-%==========================================================================
-%==========================================================================
-% Title pages.
-
-\newcommand{\mytitle}{Report for End of Year on Progress on Fish Tracking Software}
-\newcommand{\myauthor}{Ari Spraggins}
-
-\newcommand{\myskip}{\vspace{0.5in}}
-\newcommand{\layouttitle}[1]{{\bf\large\MakeUppercase{#1}}}
-\setlength{\parindent}{0em}
-\doublespace
-\pagenumbering{roman}
-\thispagestyle{empty}
-
-\begin{center}
-
-	\vspace{4in} 
-	\layouttitle{\mytitle} \\ by \\ \myauthor
-	
-	\vspace{1in}
-	A Thesis Submitted to the Faculty of \\
-	The Wilkes Honors College \\
-	in Partial Fulfillment of the Requirements for the Degree of \\
-	Bachelor of Science in Liberal Arts and Sciences \\
-	with a Concentration in Physics \\ 
-	\vspace{1in} 
-	Wilkes Honors College of \\
-	Florida Atlantic University \\
-	Jupiter, Florida \\
-	May \number\year
-
-\end{center}
-
-\newpage
-
-%==========================================================================
-
-\vspace{4in}
-\begin{center}
-	\layouttitle{\mytitle} \\
-	by \\
-	\myauthor
-\end{center}
-
-\singlespace
-\vspace{1in}
-This thesis was prepared under the direction of the candidate's thesis advisor, Dr. Yaouen Fily, and has been approved by the members of their supervisory committee. It was submitted to the faculty of the Harriet L. Wilkes Honors College and was accepted in partial fulfillment of the requirements for the degree of Bachelor of Science in Liberal Arts and Sciences.
-
-\vspace{1in}
-SUPERVISORY COMMITTEE:
-
-\newcommand{\myrule}{\vspace{0.5in}\rule{4in}{0.5pt} \\}
-
-\myrule
-Dr. Yaouen Fily 
-
-\myrule 
-{}[second reader]
-
-\myrule
-Interim Dean Timothy Steigenga, Harriet L. Wilkes Honors College 
-
-\myrule
-Date
-
-\newpage
-
-%==========================================================================
-
-%\begin{center}
-%	\layouttitle{Acknowledgements}
-%\end{center}
-\section*{Acknowledgements}
-%\addcontentsline{toc}{section}{Acknowledgements}
-
-\myskip
-Some acknowledgements.
-
-\newpage
-
-%==========================================================================
-
-%\begin{center}
-%	\layouttitle{Abstract}
-%\end{center}
-\section*{Abstract}
-\addcontentsline{toc}{section}{Abstract}
-
-\myskip
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{@{}l@{\hspace{3ex}}l}
-	Author: & \myauthor \\
-	Title: & \mytitle \\
-	Institution: & Harriet L. Wilkes Honors College, Florida Atlantic University \\
-	Thesis Advisor: & Dr. Yaouen Fily \\
-	Degree: & Bachelor of Science in Liberal Arts and Sciences \\
-	Concentration: & Physics \\
-	Year: & \the\year
-\end{tabular}
-
-
-\myskip
-\doublespace
-One of the major problem encountered when using the positions of fish in analysis is a tendency for the software to transpose the identities of the two fish whenever they cross. The goal of this program is to analyse that data and to remove that error from it. To do so we are comparing a metric that is unique to the fishes before and after the crossing, in this case a histogram of their brightness, and comparing them.
-
-\singlespace
-\newpage
-
-%==========================================================================
-
-\tableofcontents
-
-\listoftables
-
-\listoffigures
-
-\newpage
-
-%==========================================================================
-
-\setlength{\parindent}{1em}
-\pagenumbering{arabic}
-
-%==========================================================================
-%==========================================================================
-% Thesis proper.
-
+\maketitle
+\abstract{One of the major problem encountered when using the positions of fish in analysis is a tendency for the software to transpose the identities of the two fish whenever they cross. The goal of this program is to analyse that data and to remove that error from it. To do so we are comparing a metric that is unique to the fishes before and after the crossing, in this case a histogram of their brightness, and comparing them.}
 
 \section{Introduction}
-\label{introduction}
 
 The basis of this work is going to be the videos of fish swimming in a tank, more specifically a video of 2 fish. In each frame we use software that identifies dark spots as the fish.
 
@@ -223,10 +85,14 @@ Instead, during these ranges, we have to take the more involved approach of comp
 	\label{fig:hist}
 \end{figure}
 
+%\section{Previous Work}
 
-\section{Previous work}
+\section{Results}
 
-The main process by which we are computing the difference between the fish is a process laid in out in the paper on idTracker\cite{idTracker}. The authors of the paper had a similar problem, in that they were having isues with the approach that we utilised for the inital unswap in that it both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, their intensity map, and comparing them frame by frame. We are emulating this by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
+What we are doing in essence is taking the images of the fish and comparing the from one point in time to the next. To do this we are taking the parts of the 
+
+The 
+
 
 \section{Methods}
 
@@ -293,13 +159,24 @@ for i in tnrange(60,desc='nonOverlappingRange'):
 
 We can then feed this representation into a distance matrix to perform the final check for swaps.
 
-\appendix
-\section{An appendix}
+\section{Discussion}
 
-%==========================================================================
-% Bibliography.
+One of the things that we had to consider was the effect of resolution on the histograms produced by the code. When I wrote code to display the effects that reducing the amount of bins had on the accuracy of the output, I found that both going under a one to one bin to ??? ratio is useless and that while error was minimal for decreasing the amount of bins, it was noticeable enough to avoid.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{reducedHist}
+	\caption{Reduced Histograms}
+	\label{fig:reducedHist}
+	\includegraphics[width=\textwidth]{reducedGraph}
+	\caption{Reduced Graphs}
+	\label{fig:reducedGraph}
+\end{figure}
+
+
+\section{Conclusion}
 
 \printbibliography
 
-
 \end{document}
+ 
