@@ -190,11 +190,13 @@ One of the major problem encountered when using the positions of fish in analysi
 \section{Introduction}
 \label{introduction}
 
-One of the things that become much easier to track with increases in technology has been tracking the movement of fishes and other similar animals, which has been a boon for the analysis of their movements and behaviors, especially schooling. However, this new approach has an issue that it tends to confuse the fish whenever they cross, which can cause a ripple effect. To solve this issue, we need a way to track the fish from moment to moment. To do this, we are applying two approaches, both a more naive one that tends to fail in areas where the fish are close together and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier, which we got from the paper on the idTracker program from when they tried to tackle the same problem. Since the trilab is working with video of cavefish, this presented an opportunity to apply these techniques to clean up the video they have produced.
+One of the things that become much easier to track with increases in technology has been tracking the movement of fishes and other similar animals, which has been a boon for the analysis of their movements and behaviors, especially schooling. However, a common issue of automatic tracking is that whenever the position of a fish has been lost, it has no way to regain it's position and track which fish is witch. To solve this issue, we need a way to track the fish from moment to moment. To do this, we are applying two approaches in tandem, both a more naive one that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem. 
 
+The cavefish trilab on the Jupiter campus(names here?) is currently interested in the evolution of behavior of Mexican Cavefish, which necessitates a lot of video of the fish. To be able to quantify the behavior in a meaningful way, you need automated tracking. Over the last few years the fily group has developed a software to track the fish, but has the issue with the swaps, so this project fixes that.
 
+Since the trilab is working with video of cavefish, this presented an opportunity to apply these techniques to clean up the video they have produced.
 
-To begin analysis of the fish, the first step is to pick out the dark spots in the video caused by the contrast between the fish and the light background of the tank.
+Before understanding the nature of the problem, we must say a few words about the process. The process starts by picking out the dark spots in the video caused by the contrast between the fish and the light background of the tank.
 
 \begin{figure}[H]
 	\centering
@@ -203,7 +205,8 @@ To begin analysis of the fish, the first step is to pick out the dark spots in t
 	\label{fig:fish}
 \end{figure}
 
-We can use this identified fish to compare how the fish has moved from frame to frame. Once we have the position of the fish in the next frame we have compare the change between two frames by using a matrix.
+Once we have the positions of the fish, we can compare how the fish has moved from frame to frame by comparing the distances between their last known positions. If the software swaps the fish, it will look like the fish traveled longer than it should have.
+\textbf{\textit{replace this figure, remove labels, color code, make distances more distinct}}
 
 \begin{figure}[H]
 	\centering
@@ -217,6 +220,8 @@ We can the extend this frame by frame comparison over the regions where the fish
 \textbf{\textit{Example picture of crossing}}
 
 Instead, during these ranges, we have to take the more involved approach of comparing a visually distinctive features of the fishes from frame. The easiest feature to compare is this case is the brightness of the fish, which we can compare via a histogram.
+
+\textbf{\textit{move to results}}
 
 \begin{figure}[H]
 	\centering
@@ -238,9 +243,11 @@ One of the first things that I noticed when I compared the results of the unswap
 
 \subsection{Introduction}
 \textbf{\textit{Picture of the fish}}
+The basic setup is a tank with two fishes in it and a camera trained on them.
 
 \subsection{Distance Based Unswapping}
 \textbf{\textit{use current picture 2 here}}
+The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check 
 
 \subsection{histogram based unswapping}
 bright spots on fish as identifier, creates histogram, slight differences compared by code even though looks same, fish using are subpar because too uniform in brightness.

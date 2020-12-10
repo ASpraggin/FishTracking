@@ -20,3 +20,6 @@ report/fall 2020/report.aux
 *.bcf
 *.lof
 *.lot
+*.log
+*.gz
+*.aux
