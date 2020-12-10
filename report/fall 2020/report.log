@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.10) (preloaded format=pdflatex 2020.10.31)  3 DEC 2020 01:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.10) (preloaded format=pdflatex 2020.10.31)  6 DEC 2020 15:52
 entering extended mode
 **./report.tex
 (report.tex
@@ -468,20 +468,20 @@ File: biblatex.cfg
  (report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
 
 ("C:\Users\Ari\AppData\Local\Programs\MiKTeX 2.9\tex/context/base/mkii\supp-pdf
 .mkii"
@@ -520,119 +520,76 @@ Package biblatex Info: Automatic encoding selection.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'report.bbl' found.
  (report.bbl)
-Package biblatex Info: Reference section=0 on input line 56.
-Package biblatex Info: Reference segment=0 on input line 56.
- [1
+Package biblatex Info: Reference section=0 on input line 57.
+Package biblatex Info: Reference segment=0 on input line 57.
+ Excluding 'comment' comment. [1
 
-{C:/Users/Ari/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3
-
-]
-Overfull \hbox (16.13945pt too wide) in paragraph at lines 148--157
-[] 
- []
-
-[4
-
-] (report.toc)
-\tf@toc=\write5
-\openout5 = `report.toc'.
-
- [5
-
-] (report.lot)
-\tf@lot=\write6
-\openout6 = `report.lot'.
-
- [6
-
-] (report.lof)
-\tf@lof=\write7
-\openout7 = `report.lof'.
-
- [7
-
-]
-<images//fish.png, id=27, 1084.05pt x 1084.05pt>
+{C:/Users/Ari/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] Excluding 'co
+mment' comment.
+<images//fish.png, id=6, 1084.05pt x 1084.05pt>
 File: images//fish.png Graphic file (type png)
 <use images//fish.png>
-Package pdftex.def Info: images//fish.png  used on input line 195.
+Package pdftex.def Info: images//fish.png  used on input line 205.
 (pdftex.def)             Requested size: 258.75pt x 258.73822pt.
-<images//fish2.pdf, id=28, 1553.805pt x 794.97pt>
-File: images//fish2.pdf Graphic file (type pdf)
-<use images//fish2.pdf>
-Package pdftex.def Info: images//fish2.pdf  used on input line 206.
-(pdftex.def)             Requested size: 258.75pt x 132.37741pt.
  [1
 
- <./images//fish.png (PNG copy)>]
-<images//hist.png, id=33, 356.33125pt x 248.93pt>
+]
+<images//fish2.pdf, id=12, 1553.805pt x 794.97pt>
+File: images//fish2.pdf Graphic file (type pdf)
+<use images//fish2.pdf>
+Package pdftex.def Info: images//fish2.pdf  used on input line 216.
+(pdftex.def)             Requested size: 258.75pt x 132.37741pt.
+ [2 <./images//fish.png (PNG copy)> <./images//fish2.pdf>]
+<images//hist.png, id=24, 356.33125pt x 248.93pt>
 File: images//hist.png Graphic file (type png)
 <use images//hist.png>
-Package pdftex.def Info: images//hist.png  used on input line 221.
+Package pdftex.def Info: images//hist.png  used on input line 231.
 (pdftex.def)             Requested size: 258.75pt x 180.76779pt.
- [2 <./images//fish2.pdf> <./images//hist.png>] [3
+ [3 <./images//hist.png>]
+[4
+
+] [5
 
 ]
 ("C:\Users\Ari\AppData\Local\Programs\MiKTeX 2.9\tex/latex/listings\lstlang1.st
 y"
 File: lstlang1.sty 2020/03/24 1.8d listings language file
 )
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 235--264
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 257--286
 []$[]$ 
  []
 
-[4
+[6
 
 ]
-Overfull \hbox (10.00002pt too wide) in paragraph at lines 267--293
+Overfull \hbox (10.00002pt too wide) in paragraph at lines 289--315
 []$[]$ 
  []
 
-[5] [6] [7
-
-] [8
-
-] [9
+[7] [8] [9
 
 ] (report.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-Package biblatex Warning: Please (re)run Biber on the file:
-(biblatex)                report
-(biblatex)                and rerun LaTeX afterwards.
-
 Package logreq Info: Writing requests to 'report.run.xml'.
 \openout1 = `report.run.xml'.
 
- )
-(\end occurred inside a group at level 2)
-
-### semi simple group (level 2) entered at line 160 (\begingroup)
-### semi simple group (level 1) entered at line 68 (\begingroup)
-### bottom level 
+ ) 
 Here is how much of TeX's memory you used:
- 11975 strings out of 480203
- 208009 string characters out of 2878027
- 1187229 words of memory out of 3000000
- 28433 multiletter control sequences out of 15000+200000
- 537936 words of font info for 39 fonts, out of 3000000 for 9000
+ 11948 strings out of 480203
+ 207537 string characters out of 2878027
+ 1186174 words of memory out of 3000000
+ 28417 multiletter control sequences out of 15000+200000
+ 537587 words of font info for 38 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 66i,6n,73p,1064b,1499s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmbx10.pfb><C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/font
-s/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Ari/AppData/Local/Programs/MiKT
-eX 2.9/fonts/type1/public/amsfonts/cm/cmbxti10.pfb><C:/Users/Ari/AppData/Local/
-Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Users/Ari/Ap
-pData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Us
-ers/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.p
-fb><C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/
-cm/cmti10.pfb><C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publi
-c/amsfonts/cm/cmtt10.pfb>
-Output written on report.pdf (16 pages, 859035 bytes).
+ 66i,6n,73p,1064b,1387s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmbx12.pfb><C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmbxti10.pfb><C:/Users/Ari/AppData/Local/Programs/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Ari/AppData/Local/Programs/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/Ari/AppData/Local/Progra
+ms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on report.pdf (10 pages, 817618 bytes).
 PDF statistics:
- 99 PDF objects out of 1000 (max. 8388607)
+ 68 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 
