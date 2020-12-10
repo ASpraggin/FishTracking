@@ -11,3 +11,12 @@ __pycache__/tracktor_revised.cpython-37.pyc
 .ipynb_checkpoints/fishOverlapManualCheck-checkpoint.ipynb
 frames/
 .ipynb_checkpoints/overlapCheck-checkpoint.txt
+report/fall 2020/report.aux
+*.aux
+*.log
+*.gz
+*.xml
+*.bbl
+*.bcf
+*.lof
+*.lot
