@@ -190,9 +190,9 @@ One of the major problem encountered when using the positions of fish in analysi
 \section{Introduction}
 \label{introduction}
 
-One of the things that become much easier to track with increases in technology has been tracking the movement of fishes and other similar animals, which has been a boon for the analysis of their movements and behaviors, especially schooling. However, a common issue of automatic tracking is that whenever the position of a fish has been lost, it has no way to regain it's position and track which fish is witch. To solve this issue, we need a way to track the fish from moment to moment. To do this, we are applying two approaches in tandem, both a more naive one that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem. 
+One of the things that become much easier to track with increases in technology has been tracking the movement of fishes and other similar animals, which has been a boon for the analysis of their movements and behaviors, especially schooling. However, a common issue of automatic tracking is that whenever the position of a fish has been lost, it has no way to regain it's position and track which fish is witch. To solve this issue, we need a way to track the fish from moment to moment. To do this, we are applying two approaches in tandem, both a more naive one that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem. 
 
-The cavefish trilab on the Jupiter campus(names here?) is currently interested in the evolution of behavior of Mexican Cavefish, which necessitates a lot of video of the fish. To be able to quantify the behavior in a meaningful way, you need automated tracking. Over the last few years the fily group has developed a software to track the fish, but has the issue with the swaps, so this project fixes that.
+The cavefish trilab on the Jupiter campus(names here?) is currently interested in the evolution of behavior of Mexican Cavefish, which necessitates a lot of video of the fish. To be able to quantify the behavior in a meaningful way, you need automated tracking. Over the last few years the fily group has developed a software to track the fish, but has the issue with the swaps, so this project aims to fix that.
 
 Since the trilab is working with video of cavefish, this presented an opportunity to apply these techniques to clean up the video they have produced.
 
@@ -206,51 +206,40 @@ Before understanding the nature of the problem, we must say a few words about th
 \end{figure}
 
 Once we have the positions of the fish, we can compare how the fish has moved from frame to frame by comparing the distances between their last known positions. If the software swaps the fish, it will look like the fish traveled longer than it should have.
-\textbf{\textit{replace this figure, remove labels, color code, make distances more distinct}}
+\textbf{\textit{figure of ``distance matrix`` of fishes}}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.75\linewidth]{fish2}
-	\caption{The distance matrix}
-	\label{fig:fish2}
-\end{figure}
-
-We can the extend this frame by frame comparison over the regions where the fish are visually distinct. However, in ranges where the positions of the fishes are reported as overlapping, this approach won't work for obvious reasons. 
+We can the extend this frame by frame comparison over the regions where the fish are visually distinct. However, in ranges where the positions of the fishes are reported as overlapping, this approach won't work due to the construction of the tracking program. 
 
 \textbf{\textit{Example picture of crossing}}
 
-Instead, during these ranges, we have to take the more involved approach of comparing a visually distinctive features of the fishes from frame. The easiest feature to compare is this case is the brightness of the fish, which we can compare via a histogram.
-
-\textbf{\textit{move to results}}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.75\linewidth]{hist}
-	\caption{The histogram}
-	\label{fig:hist}
-\end{figure}
-
+Instead, during these ranges, we have to take the more involved approach of comparing a visually distinctive feature of the fishes from frame to frame.
 
 \section{Previous work}
 
-The main process by which we are computing the difference between the fish is a process laid in out in the paper on idTracker \cite{idTracker}. The authors of the paper had a similar problem, in that they were having issues with the approach that we utilised for the initial unswap in that it both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which they decided would be the fishes intensity map. They then compare the identifiers frame by frame, to determine which fish is witch. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
+The main process by which we are computing the difference between the fish is a process laid in out in the paper on idTracker \cite{idTracker}. The authors of the paper had a similar problem, in that they were having issues with the approach of tracking distances between the fishes position in that the approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which they decided would be the fishes intensity map, which was created by . They then compare the identifiers frame by frame, to determine which fish is witch. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
 
 \section{results}
 
-\textbf{\textit{show pictures and describe accuracy.}}
 
-One of the first things that I noticed when I compared the results of the unswapping with the manual check was that there was a relatively low accuracy rate. 
 
 \subsection{Introduction}
 \textbf{\textit{Picture of the fish}}
-The basic setup is a tank with two fishes in it and a camera trained on them.
+The basic setup is a tank with two fishes in it and a camera trained on them. 
+\textbf{\textit{picture of frame/setup}}
+
+Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite github page) since it has been formulated expressly for this purpose. The trilab-tracker then returns an array for each of the fish containing the pixels and their colors. Once we have the fish saved in a format that we can analyze, the next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
 
 \subsection{Distance Based Unswapping}
 \textbf{\textit{use current picture 2 here}}
-The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check 
+The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check for swaps. This approach works on the regions where there are two fish detected (``nonoverlapping range''), and so we need to confine it to those regions. 
 
-\subsection{histogram based unswapping}
-bright spots on fish as identifier, creates histogram, slight differences compared by code even though looks same, fish using are subpar because too uniform in brightness.
+\subsection{Histogram Based Unswapping}
+In the overlapping (or regions where one fish is detected), we need an identifier for the fish, so we will use bright spots on fish as identifier. Once we have those identifiers, the easiest way to compare these identifiers is to create histogram of the brightness of the fish. We can then have the program compare the slight differences, because even though look same, they are different enough that the code can pick up the differences. However, one issue that we ran into is that the fish we are using are subpar because they are too uniform in brightness.
+
+\subsection{Accuracy}
+\textbf{\textit{show pictures and describe accuracy.}}
+
+One of the first things that I noticed when I compared the results of the unswapping with the manual check was that there was a relatively low accuracy rate. This is probably due to the fish being too uniform, as once we switched to a slightly more accurate fish recognition program, we can expect a slightly more accureate result.
 
 \section{Methods}
 
@@ -314,6 +303,18 @@ for i in tnrange(60,desc='nonOverlappingRange'):
         histDifList[i,k]=histDif.copy()
 \end{lstlisting}
 \end{minipage}
+
+This produces a histogram, similar to the one seen below. The problem with 
+
+\textbf{\textit{move to results}}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{hist}
+	\caption{The histogram}
+	\label{fig:hist}
+\end{figure}
+
 
 We can then feed this representation into a distance matrix to perform the final check for swaps.
 
