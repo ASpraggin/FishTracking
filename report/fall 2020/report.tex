@@ -206,11 +206,21 @@ Before understanding the nature of the problem, we must say a few words about th
 \end{figure}
 
 Once we have the positions of the fish, we can compare how the fish has moved from frame to frame by comparing the distances between their last known positions. If the software swaps the fish, it will look like the fish traveled longer than it should have.
-\textbf{\textit{figure of ``distance matrix`` of fishes}}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{img1}
+	\caption{Basic swap check, longer(wrong) distances are in pen.}
+	\label{fig:matrix}
+\end{figure}
 We can the extend this frame by frame comparison over the regions where the fish are visually distinct. However, in ranges where the positions of the fishes are reported as overlapping, this approach won't work due to the construction of the tracking program. 
 
-\textbf{\textit{Example picture of crossing}}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{overlap}
+	\caption{An example of an Overlap}
+	\label{fig:overlap}
+\end{figure}
 
 Instead, during these ranges, we have to take the more involved approach of comparing a visually distinctive feature of the fishes from frame to frame.
 
@@ -223,27 +233,54 @@ The main process by which we are computing the difference between the fish is a 
 
 
 \subsection{Introduction}
-\textbf{\textit{Picture of the fish}}
-The basic setup is a tank with two fishes in it and a camera trained on them. 
-\textbf{\textit{picture of frame/setup}}
+The basic setup is a tank with two fishes in it and a camera trained on them. This produces video, of which an example frame is shown below
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{fish}
+	\caption{An example frame}
+\end{figure}
 
 Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite github page) since it has been formulated expressly for this purpose. The trilab-tracker then returns an array for each of the fish containing the pixels and their colors. Once we have the fish saved in a format that we can analyze, the next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
 
 \subsection{Distance Based Unswapping}
-\textbf{\textit{use current picture 2 here}}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{fish2}
+	\caption{Basic overview of unswapping logic}
+\end{figure}
 The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check for swaps. This approach works on the regions where there are two fish detected (``nonoverlapping range''), and so we need to confine it to those regions. 
 
 \subsection{Histogram Based Unswapping}
 In the overlapping (or regions where one fish is detected), we need an identifier for the fish, so we will use bright spots on fish as identifier. Once we have those identifiers, the easiest way to compare these identifiers is to create histogram of the brightness of the fish. We can then have the program compare the slight differences, because even though look same, they are different enough that the code can pick up the differences. However, one issue that we ran into is that the fish we are using are subpar because they are too uniform in brightness.
 
 \subsection{Accuracy}
-\textbf{\textit{show pictures and describe accuracy.}}
+%\textbf{\textit{show pictures and describe accuracy.}}
 
 One of the first things that I noticed when I compared the results of the unswapping with the manual check was that there was a relatively low accuracy rate. This is probably due to the fish being too uniform, as once we switched to a slightly more accurate fish recognition program, we can expect a slightly more accureate result.
 
 \section{Methods}
 
-One of the things that quickly becomes apparent is that the fish are present as a series of dark pixels against a white background, which means that we can feed the image of a frame to a different software (in this case trilab-tracker) to generate a list of pixels that compose the fishes for tracking. This software returns the fish as either a pair of arrays for the regions where it detects two fish, and a single array where it detects one fish of the form [frame][fish][xpixels, ypixels][color]. Once we have the fish in an array form for ease of operation, we can begin performing an initial unswap by tracking the distance between the fish to determine if there was a swap, by comparing the on and off axis distances of the two possible positions of the fish. The downside of this approach is that it only works in areas in which the tracker returns that there is two fish, so we will first need to determine what regions are overlapping and nonoverlapping. Once we have these nonoverlapping regions, we can begin performing the swap check. 
+One of the things that quickly becomes apparent is that the fish are present as a series of dark pixels against a white background, which means that we can feed the image of a frame to a different software (in this case trilab-tracker) to generate a list of pixels that compose the fishes for tracking. This software returns the fish as either a pair of arrays for the regions where it detects two fish, and a single array where it detects one fish of the form [frame][fish][xpixels, ypixels][color]. Once we have the fish in an array form for ease of operation, we need to partition the data into sections of overlapping and non overlapping regions so that we can apply different approaches to each. 
+
+\begin{minipage}[c]{\textwidth}
+\begin{lstlisting}[language=Python]
+i2=0
+nonOverlappingRange=[]
+while i2<len(fish):
+    i1=i2
+    while i1<len(fish) and len(fish[i1])!=2:
+        i1+=1
+    i2=i1
+    while i2 < len(fish) and len(fish[i2])==2:
+        #find the first overlapping index
+        i2+=1
+    nonOverlappingRange.append([i1,i2])
+print(nonOverlappingRange)
+\end{lstlisting}
+\end{minipage}
+
+Once we have the data sorted into regions, we can begin working on the nonoverlapping ones. The attack for this section is to trackthe distance between the fish to determine if there was a swap, by comparing the on and off axis distances of the two possible positions of the fish. The downside of this approach is that it only works in areas in which the tracker returns that there is two fish, so we will first need to determine what regions are overlapping and nonoverlapping. Once we have these nonoverlapping regions, we can begin performing the swap check. 
 
 \begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
@@ -275,6 +312,7 @@ def swapStatus(pos,i):
 \end{lstlisting}
 \end{minipage}
 
+
 Once we have this data for the nonoverlapping ranges, we have to switch approaches for the overlapping regions. Since we can't compare the distances with the software only reporting a single fish, we are forced to use a different technique., we are using the technique of comparing the histograms of the brightness of the fishes before and after an overlapping range, as proposed by the paper on idTracker\cite{idTracker}. The process for this is for us to feed the arrays directly into numpy's histogram2d, which allows us to compute the histograms with a minimal amount of effort other than determining the correct bins. After that we need to manipulate the data slightly so that the histograms are taken as the average over the nonoverlapping regions for more accuracy, and are then saved out for comparison.
 
 \begin{minipage}[c]{\textwidth}
@@ -304,19 +342,26 @@ for i in tnrange(60,desc='nonOverlappingRange'):
 \end{lstlisting}
 \end{minipage}
 
-This produces a histogram, similar to the one seen below. The problem with 
+This produces a histogram, similar to the one seen below.
 
 \textbf{\textit{move to results}}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{hist}
-	\caption{The histogram}
-	\label{fig:hist}
+	\includegraphics[width=.75\linewidth]{reducedHist}
+	\caption{The histograms}
+	\label{fig:reducedHist}
 \end{figure}
 
+We can then feed this representation into a simple value comparison to check for swaps. When rendered to a more human readable form, we can either get a list of frames, or a graphs as shown below.
 
-We can then feed this representation into a distance matrix to perform the final check for swaps.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{reducedGraph}
+	\caption{The graphs from the histograms}
+	\label{fig:reducedGraph}
+\end{figure}
+
 
 \appendix
 \section{An appendix}
