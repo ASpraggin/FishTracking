@@ -200,26 +200,24 @@ Before understanding the nature of the problem, we must say a few words about th
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{fish}
+	\includegraphics[width=.5\linewidth]{fish}
 	\caption{The two fishes}
 	\label{fig:fish}
 \end{figure}
 
 Once we have the positions of the fish, we can compare how the fish has moved from frame to frame by comparing the distances between their last known positions. If the software swaps the fish, it will look like the fish traveled longer than it should have.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.75\linewidth]{img1}
-	\caption{Basic swap check, longer(wrong) distances are in pen.}
-	\label{fig:matrix}
-\end{figure}
 We can the extend this frame by frame comparison over the regions where the fish are visually distinct. However, in ranges where the positions of the fishes are reported as overlapping, this approach won't work due to the construction of the tracking program. 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{overlap}
-	\caption{An example of an Overlap}
-	\label{fig:overlap}
+	\newlength{\mylen}
+	\setlength{\mylen}{.4\linewidth}
+	\includegraphics[height=\mylen]{img1}
+	\hspace{.02\linewidth}
+	\includegraphics[height=\mylen]{overlap}
+	\caption{Left: A basic swap check, longer(wrong) distances are in pen. Right: An example of an Overlap}
+	\label{fig:overlap_swap}
 \end{figure}
 
 Instead, during these ranges, we have to take the more involved approach of comparing a visually distinctive feature of the fishes from frame to frame.
@@ -237,7 +235,7 @@ The basic setup is a tank with two fishes in it and a camera trained on them. Th
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{fish}
+	\includegraphics[width=.5\linewidth]{fish}
 	\caption{An example frame}
 \end{figure}
 
@@ -253,6 +251,13 @@ The first approach we tried is taking the positions of the fish and comparing ho
 
 \subsection{Histogram Based Unswapping}
 In the overlapping (or regions where one fish is detected), we need an identifier for the fish, so we will use bright spots on fish as identifier. Once we have those identifiers, the easiest way to compare these identifiers is to create histogram of the brightness of the fish. We can then have the program compare the slight differences, because even though look same, they are different enough that the code can pick up the differences. However, one issue that we ran into is that the fish we are using are subpar because they are too uniform in brightness.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{reducedHist}
+	\caption{The histograms}
+	\label{fig:reducedHist}
+\end{figure}
 
 \subsection{Accuracy}
 %\textbf{\textit{show pictures and describe accuracy.}}
@@ -344,20 +349,11 @@ for i in tnrange(60,desc='nonOverlappingRange'):
 
 This produces a histogram, similar to the one seen below.
 
-\textbf{\textit{move to results}}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.75\linewidth]{reducedHist}
-	\caption{The histograms}
-	\label{fig:reducedHist}
-\end{figure}
-
 We can then feed this representation into a simple value comparison to check for swaps. When rendered to a more human readable form, we can either get a list of frames, or a graphs as shown below.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{reducedGraph}
+	\includegraphics[width=\linewidth]{reducedGraph}
 	\caption{The graphs from the histograms}
 	\label{fig:reducedGraph}
 \end{figure}
