@@ -160,7 +160,7 @@ Some acknowledgements.
 \myskip
 \doublespace
 \end{comment}
-One of the major problem encountered when using the positions of fish in analysis is a tendency for the software to transpose the identities of the two fish whenever they cross. The goal of this program is to analyse that data and to remove that error from it. To do so we are comparing a metric that is unique to the fishes before and after the crossing, in this case a histogram of their brightness, and comparing them.
+Automatic video tracking has had a major impact on animal behavior studies. One of the problems with using this to track the positions of animals has been keeping the animals distinct. To solve this problem for groups of fish, I will be using python code to track patterns of brightness as a visual identifier to track the fish using data from the labs of Dr. Keene, Dr. Duboue, and Dr. Kowalko, who all work with Mexican cavefish on the Jupiter campus.
 
 \singlespace
 \newpage
@@ -190,17 +190,15 @@ One of the major problem encountered when using the positions of fish in analysi
 \section{Introduction}
 \label{introduction}
 
-One of the things that become much easier to track with increases in technology has been tracking the movement of fishes and other similar animals, which has been a boon for the analysis of their movements and behaviors, especially schooling. However, a common issue of automatic tracking is that whenever the position of a fish has been lost, it has no way to regain it's position and track which fish is witch. To solve this issue, we need a way to track the fish from moment to moment. To do this, we are applying two approaches in tandem, both a more naive one that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem. 
+Something that become much easier to do with increases in technology has been tracking the movement of fishes and other similar animals, which has been a boon for the analysis of their movements and behaviors, especially schooling. However, a common issue of automatic tracking is that whenever the position of a fish has been lost, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment. To do this, we are applying two approaches in tandem, both a more naive one that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem.
 
-The cavefish trilab on the Jupiter campus(names here?) is currently interested in the evolution of behavior of Mexican Cavefish, which necessitates a lot of video of the fish. To be able to quantify the behavior in a meaningful way, you need automated tracking. Over the last few years the fily group has developed a software to track the fish, but has the issue with the swaps, so this project aims to fix that.
-
-Since the trilab is working with video of cavefish, this presented an opportunity to apply these techniques to clean up the video they have produced.
+The cavefish trilab on the Jupiter campus of Dr. Keene, Dr. Duboue, and Dr. Kowalko is currently interested in the evolution of behavior of Mexican Cavefish, which necessitates a lot of video of the fish. To be able to quantify the behavior in a meaningful way, you need automated tracking. Over the last few years the fily group has developed a software to track the fish, but has the issue with the swaps, so this project aims to fix that. Since the trilab is working with video of cavefish, this presented an opportunity to apply these techniques to clean up the video they have produced.
 
 Before understanding the nature of the problem, we must say a few words about the process. The process starts by picking out the dark spots in the video caused by the contrast between the fish and the light background of the tank.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.5\linewidth]{fish}
+	\includegraphics[width=.5\linewidth]{fishzoom}
 	\caption{The two fishes}
 	\label{fig:fish}
 \end{figure}
@@ -213,10 +211,10 @@ We can the extend this frame by frame comparison over the regions where the fish
 	\centering
 	\newlength{\mylen}
 	\setlength{\mylen}{.4\linewidth}
-	\includegraphics[height=\mylen]{img1}
+	\includegraphics[width=.5\linewidth]{fish1}
 	\hspace{.02\linewidth}
-	\includegraphics[height=\mylen]{overlap}
-	\caption{Left: A basic swap check, longer(wrong) distances are in pen. Right: An example of an Overlap}
+	\includegraphics[height=\mylen]{overlapzoom}
+	\caption{Left: A basic swap check, longer(wrong) distances are in red. Right: An example of an Overlap}
 	\label{fig:overlap_swap}
 \end{figure}
 
@@ -224,14 +222,12 @@ Instead, during these ranges, we have to take the more involved approach of comp
 
 \section{Previous work}
 
-The main process by which we are computing the difference between the fish is a process laid in out in the paper on idTracker \cite{idTracker}. The authors of the paper had a similar problem, in that they were having issues with the approach of tracking distances between the fishes position in that the approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which they decided would be the fishes intensity map, which was created by . They then compare the identifiers frame by frame, to determine which fish is witch. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
+The main process by which we are computing the difference between the fish is a process laid in out in the paper on idTracker \cite{idTracker}. The authors of the paper also had a problem with the approach of tracking distances between the fishes position in that the approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which the authors decided would be the fishes intensity map, which was created by taking readings of the brightness of the fish and noting unique spots. The process then compares the identifiers frame by frame, to determine which fish is which. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
 
 \section{results}
 
-
-
 \subsection{Introduction}
-The basic setup is a tank with two fishes in it and a camera trained on them. This produces video, of which an example frame is shown below
+The basic setup of the labs we are taking data from is a tank with two fishes in it and a camera trained on them. This produces video, of which an example frame is shown below
 
 \begin{figure}[H]
 	\centering
