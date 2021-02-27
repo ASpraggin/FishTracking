@@ -198,12 +198,25 @@ Before understanding the nature of the problem, we must say a few words about th
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.5\linewidth]{fishzoom}
+	\includegraphics[width=.5\linewidth]{140cropped}
 	\caption{The two fishes}
 	\label{fig:fish}
 \end{figure}
 
-Once we have the positions of the fish, we can compare how the fish has moved from frame to frame by comparing the distances between their last known positions. If the software swaps the fish, it will look like the fish traveled longer than it should have.
+Once we have the positions of the fish, we can compare how the fish has moved from frame to frame by comparing the distances between their last known positions. If the software swaps the fish, it will look like the fish traveled longer than it should have. Below we have the fish as it tracks up to an overlap and goes past it, so you can see where the error would occur.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.125\linewidth]{5133}
+	\includegraphics[width=.125\linewidth]{5134}
+	\includegraphics[width=.125\linewidth]{5135}
+	\includegraphics[width=.125\linewidth]{5136}
+	\includegraphics[width=.125\linewidth]{5137}
+	\includegraphics[width=.125\linewidth]{5138}
+	\includegraphics[width=.125\linewidth]{5139}
+	\includegraphics[width=.125\linewidth]{5140}
+	\caption{Before and after an overlap}
+\end{figure}
 
 We can the extend this frame by frame comparison over the regions where the fish are visually distinct. However, in ranges where the positions of the fishes are reported as overlapping, this approach won't work due to the construction of the tracking program. 
 
@@ -246,7 +259,7 @@ Since we need to track the fish in the setup, we need feed the video captured fr
 The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check for swaps. This approach works on the regions where there are two fish detected (``nonoverlapping range''), and so we need to confine it to those regions. 
 
 \subsection{Histogram Based Unswapping}
-In the overlapping (or regions where one fish is detected), we need an identifier for the fish, so we will use bright spots on fish as identifier. Once we have those identifiers, the easiest way to compare these identifiers is to create histogram of the brightness of the fish. We can then have the program compare the slight differences, because even though look same, they are different enough that the code can pick up the differences. However, one issue that we ran into is that the fish we are using are subpar because they are too uniform in brightness.
+In the overlapping (or regions where one fish is detected), we need an identifier for the fish, so we will use bright spots on fish as this identifier. Once we have those identifiers, the easiest way to compare these identifiers is to create histogram of the brightness of the fish. We can then have the program compare the slight differences, because even though look same, they are different enough that the code can pick up the differences. However, one issue that we ran into is that the fish we are using are subpar because they are too uniform in brightness.
 
 \begin{figure}[H]
 	\centering
