@@ -190,9 +190,9 @@ Automatic video tracking has had a major impact on animal behavior studies. One 
 \section{Introduction}
 \label{introduction}
 
-Something that become much easier to do with increases in technology has been tracking the movement of fishes and other similar animals. This advance has especially been a boon for the analysis of their movements and behaviors, especially schooling. However, a common issue of automatic tracking is that whenever the position of a fish has been lost, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment. To do this, we are applying two approaches in tandem, both a more naive one that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem.
+Something that has become much easier in recent years, primarily due to increases in technology, has been tracking the movement of fishes and other similar animals. These advances has especially been a boon for the analysis of their movements and behaviors, especially schooling. This will allow scientists to finally be able to do predictive modeling of the fish, which will allow for answers to questions about the lives of fish that have previously been unanswered. However, one issue that arises is that it is impractical to quantify fish behavior without automated tracking. As such, this project aims to provide a program that tracks the fish so that the labs can analyse them. To do this, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of a fish has been lost, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
 
-The cavefish trilab on the Jupiter campus of Dr. Keene, Dr. Duboue, and Dr. Kowalko is currently interested in the evolution of behavior of Mexican Cavefish, which necessitates a lot of video of the fish. To be able to quantify the behavior in a meaningful way, you need automated tracking. Over the last few years the fily group has developed a software to track the fish, but has the issue with the swaps, so this project aims to fix that. Since the trilab is working with video of cavefish, this presented an opportunity to apply these techniques to clean up the video they have produced.
+Since fish motion has become so much easier to work with, some groups are using this opportunity to study the lives and motion of different types of fish. One of these is a group out of Jupiter, which are working on Mexican cavefish. This lab, headed by Dr. Keene, Dr. Duboue, and Dr. Kowalko, is currently interested in the evolution of behavior of Mexican Cavefish, which necessitates a lot of video of the fish. Over the last few years the fily group has developed a software to track the fish, but has the issue with the swaps, so this project aims to fix that. Since the trilab is working with video of cavefish, this presented an opportunity to apply these techniques to clean up the video they have produced 
 
 Before understanding the nature of the problem, we must say a few words about the process. The process starts by picking out the dark spots in the video caused by the contrast between the fish and the light background of the tank.
 
@@ -207,14 +207,14 @@ Once we have the positions of the fish, we can compare how the fish has moved fr
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.125\linewidth]{5133}
-	\includegraphics[width=.125\linewidth]{5134}
-	\includegraphics[width=.125\linewidth]{5135}
-	\includegraphics[width=.125\linewidth]{5136}
-	\includegraphics[width=.125\linewidth]{5137}
-	\includegraphics[width=.125\linewidth]{5138}
-	\includegraphics[width=.125\linewidth]{5139}
-	\includegraphics[width=.125\linewidth]{5140}
+	\includegraphics[width=.24\linewidth]{5133}
+	\includegraphics[width=.24\linewidth]{5134}
+	\includegraphics[width=.24\linewidth]{5135}
+	\includegraphics[width=.24\linewidth]{5136}
+	\includegraphics[width=.24\linewidth]{5137}
+	\includegraphics[width=.24\linewidth]{5138}
+	\includegraphics[width=.24\linewidth]{5139}
+	\includegraphics[width=.24\linewidth]{5140}
 	\caption{Before and after an overlap}
 \end{figure}
 
@@ -244,11 +244,11 @@ The basic setup of the labs we are taking data from is a tank with two fishes in
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.5\linewidth]{fish}
-	\caption{An example frame}
+	\includegraphics[width=.5\linewidth]{figures.frame5140}
+	\caption{An example frame of the video}
 \end{figure}
 
-Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite github page) since it has been formulated expressly for this purpose. The trilab-tracker then returns an array for each of the fish containing the pixels and their colors. Once we have the fish saved in a format that we can analyze, the next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
+Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite https://github.com/yffily/trilab-tracker) since it has been formulated expressly for this purpose. The trilab-tracker then returns an array for each of the fish containing the pixels and their colors. Once we have the fish saved in a format that we can analyze, the next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
 
 \subsection{Distance Based Unswapping}
 \begin{figure}[H]
