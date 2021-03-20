@@ -190,11 +190,10 @@ Automatic video tracking has had a major impact on animal behavior studies. One 
 \section{Introduction}
 \label{introduction}
 
-%replace first sentence with: Fish schooling is visually pleasing, schooling is challenging. in order to make decisions ,need quantitive data/where each fish is. it is easy to have data on fish, have person watch. if have to have person watch fish, can't get enough data for things like doing analysis. now talk about how advances in computer vision make haveing a program that allows for tracking of fish is game changer. 
-Something that has perplexed animal scientists for some time now has been tracking schooling behavior in a meaningful way. \iffalse make this sentence more clear:\fi However, there has been some inroads made recently on the subject, primarily due to increases in technology. These advances will allow scientists to finally be able to do predictive modeling of the fish, as doing any sort of analysis before required manual observation.
+While visually pleasing, schooling is a rather challenging topic htat has long befuddled animal scientists, due to the fact that to preform proper analysis of the animals' behavior, a vast quantity of positional data is needed. This has been alleviated recently with advances in technology, since scientists can now use computers to track the animals' positions. While this technically was possible before, this would require a person sitting in front of a video manually tracking the positions of each of the animals in question, which is what the program that we are writing aims to eliminate.
 
 %talk about how interested in how schooling came to be? schooling dynamics of related groups can provide insight in to how groups evolved. now talk about trilab studying species that has varients that both do and don't school that are similar.
-In particular, the group that this paper gets it's data from is looking at Mexican Cavefish, which are both unique as an evolutionary remanent, which allows us to gain insight into the history of how schooling behavior has changed over time, and rather simplistic which is a boon for simplicities sake. However, one issue that arises is that it is impractical to quantify fish behavior without automated tracking. As such, this project aims to provide a program that tracks the fish so that the labs can analyse them.
+In particular, the group that this paper gets it's data from is looking at Mexican Cavefish, which are both unique as an evolutionary remanent, which allows us to gain insight into the history of how schooling behavior has changed over time, and rather simplistic which is a boon for simplicities sake. In addition, one of the quirks of Mexican Cavefish is that different groups have startling evolutionary differences such as one of the groups having not evoluved schooling, despite being nominally the same species as the ones that did. However, one issue that arises is that it is impractical to quantify fish behavior without automated tracking. As such, this project aims to provide a program that tracks the fish so that the labs can analyse them.
 
 Since fish motion has become so much easier to work with, some groups that were studying the fish are using this opportunity to study the lives and motion of different types of fish in much more detail and with much more data than they were before. One of these is an association of groups out of Jupiter, which are working on Mexican cavefish. These labs, headed by Dr. Keene, Dr. Duboue, and Dr. Kowalko, collectively known as the cavefish trilab, are currently interested in the evolution of behavior of Mexican Cavefish, which necessitates a lot of video of the fish. Over the last few years the cavefish trilab has been collaborating with Dr. Fily, to apply physics techniques of collective grouping. He has developed a software to track the fish, which is currently in use by the labs, but has the issue with maintaining the identities of the fish throughout the experiment, so this project aims to fix that. Since the trilab is working with video of cavefish, this presented an opportunity to apply these techniques to clean up the video they have produced. 
 
@@ -274,9 +273,15 @@ Instead, during these ranges, we have to take the more involved approach of comp
 
 The main process by which we are computing the difference between the fish is a process laid in out in the paper on idTracker \cite{idTracker}. The authors of the paper also had a problem with the approach of tracking distances between the fishes position in that the approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which the authors decided would be the fishes intensity map, which was created by taking readings of the brightness of the fish and noting unique spots. The process then compares the identifiers frame by frame, to determine which fish is which. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
 
+One thing to note about this process is that it is in no way unique. Since this is a common problem across all biological diciplines that deal with animals on a small scale, multiple solutions have com forth for resolving this issue. Some of the more notable ones are: idTracker.ai, which is an upgrade to the idTracker program using machine learning; trex (cite trex.run), which is another program that using machine learning; and deeplabcut, which also uses machine learning, but is optimized for posture tracking in animals. These programs are in a position where they are adjacent to what the labs we are working with need, they each have pitfalls htat make them nonideal. Most prominently, the labs would prefer not to have to train programs to get accurate results, with the biggest offender of this being deeplabcut, in addition to not wanting to deal with the computationally insensitive nature of machine learning. This is in addition to several of the programs giving poor results when used in test cases due to optimization issues, with trex being the worst culpreate for this. Instead the deccision was made to create a program that was optimized for use by the labs.
+
+%talk about idTracker.ai, trex(trex.run)(doesn't work as well). both use machine learning. deeplabcut (more for posture tracking, also uses machine learning, need to identify points(training).) lot of activity in area due to machine learning, but machine learning is much more intensive computationally, and in house solution is more tailored to what groups are doing.
+
 \section{Results}
 
 \subsection{Introduction}
+%better heading, need experimental heading subheader, say experiment not part of project, but need to cover for completeness.
+
 The basic setup of the labs we are taking data from is a tank with two fishes in it and a camera trained on them, as seen below.
 
 \begin{figure}[H]
@@ -294,8 +299,9 @@ This setup produces a video for us to use, of which an example frame is shown be
 	\caption{An example frame of the video}
 \end{figure}
 
-%following is over explained
-Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite https://github.com/yffily/trilab-tracker) since it has been formulated expressly for this purpose. The trilab-tracker then returns an array for each of the fish containing the pixels and their colors. Once we have the fish saved in a format that we can analyze, the next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
+%following is over explained, need different subheading here: current tracking 
+%say focusing on two fish somewhere
+Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite https://github.com/yffily/trilab-tracker)(only using image recognition portions, and then taking over from there) since it has been formulated expressly for this purpose. The trilab-tracker then returns an array for each of the fish containing the pixels and their colors. Once we have the fish saved in a format that we can analyze, the next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
 
 \subsection{Distance Based Unswapping}
 \begin{figure}[H]
@@ -304,6 +310,7 @@ Since we need to track the fish in the setup, we need feed the video captured fr
 	\caption{Basic overview of unswapping logic}
 \end{figure}
 %remove matrix, talk about comparing distance traveled/be more specific in labels.
+%put more stuff in here. use more figures, show graphs of number of swaps before and after
 The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check for swaps. This approach works on the regions where there are two fish detected (``nonoverlapping range''), and so we need to confine it to those regions. 
 
 \subsection{Histogram Based Unswapping}
