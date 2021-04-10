@@ -273,21 +273,17 @@ Instead, during these ranges, we have to take the more involved approach of comp
 
 The main process by which we are computing the difference between the fish is a process laid in out in the paper on idTracker \cite{idTracker}. The authors of the paper also had a problem with the approach of tracking distances between the fishes position in that the approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which the authors decided would be the fishes intensity map, which was created by taking readings of the brightness of the fish and noting unique spots. The process then compares the identifiers frame by frame, to determine which fish is which. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
 
-One thing to note about this process is that it is in no way unique. Since this is a common problem across all biological diciplines that deal with animals on a small scale, multiple solutions have com forth for resolving this issue. Some of the more notable ones are: idTracker.ai, which is an upgrade to the idTracker program using machine learning; trex (cite trex.run), which is another program that using machine learning; and deeplabcut, which also uses machine learning, but is optimized for posture tracking in animals. These programs are in a position where they are adjacent to what the labs we are working with need, they each have pitfalls htat make them nonideal. Most prominently, the labs would prefer not to have to train programs to get accurate results, with the biggest offender of this being deeplabcut, in addition to not wanting to deal with the computationally insensitive nature of machine learning. This is in addition to several of the programs giving poor results when used in test cases due to optimization issues, with trex being the worst culpreate for this. Instead the deccision was made to create a program that was optimized for use by the labs.
-
-%talk about idTracker.ai, trex(trex.run)(doesn't work as well). both use machine learning. deeplabcut (more for posture tracking, also uses machine learning, need to identify points(training).) lot of activity in area due to machine learning, but machine learning is much more intensive computationally, and in house solution is more tailored to what groups are doing.
+One thing to note about this process is that it is in no way unique. Since this is a common problem across all biological diciplines that deal with animals on a small scale, multiple solutions have com forth for resolving this issue. Some of the more notable ones are: idTracker.ai, which is an upgrade to the idTracker program using machine learning; trex (cite trex.run), which is another program that using machine learning; and deeplabcut, which also uses machine learning, but is optimized for posture tracking in animals. These programs are in a position where they are adjacent to what the labs we are working with need, they each have pitfalls that make them nonideal. Most prominently, the labs would prefer not to have to train programs to get accurate results, with the biggest offender of this being deeplabcut, in addition to not wanting to deal with the computationally insensitive nature of machine learning. This is in addition to several of the programs giving poor results when used in test cases due to optimization issues, with trex being the worst culprit for this. Instead the decision was made to create a program that was optimized for use by the labs.
 
 \section{Results}
 
-\subsection{Introduction}
-%better heading, need experimental heading subheader, say experiment not part of project, but need to cover for completeness.
-
-The basic setup of the labs we are taking data from is a tank with two fishes in it and a camera trained on them, as seen below.
+\subsection{The Data Gathering Setup}
+While this program is a step or two removed from the actual experimenting on the fish, for completenesses sake, we will be covering the experiment. The basic setup of the labs we are taking data from is a tank with two fishes in it and a camera trained on them, as seen below.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.5\linewidth]{experimental_design}
-	\caption{An example frame of the video}
+	\caption{The tank setup}
 \end{figure}
 
 
@@ -301,7 +297,9 @@ This setup produces a video for us to use, of which an example frame is shown be
 
 %following is over explained, need different subheading here: current tracking 
 %say focusing on two fish somewhere
-Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite https://github.com/yffily/trilab-tracker)(only using image recognition portions, and then taking over from there) since it has been formulated expressly for this purpose. The trilab-tracker then returns an array for each of the fish containing the pixels and their colors. Once we have the fish saved in a format that we can analyze, the next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
+Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite https://github.com/yffily/trilab-tracker)since it has been formulated expressly for this purpose, though that program has analysis tools that are not relevant to this program, so we are just using the portion of the program that deals with capturing the image and recognising the fish and performing our own analysis with that data. The tracker works taking the tank as a constant background, and noting that the fish are the only dark spots on the tank. It then returns an array for each of the fish containing a list of the fish's pixels and those pixel's colors. Once we have the fish saved in a format that we can analyze, we are ready to start working on the tracking of the fish. Since each the way we store the data gives each fish an identifier, we then can use those 
+
+the next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
 
 \subsection{Distance Based Unswapping}
 \begin{figure}[H]
@@ -311,6 +309,9 @@ Since we need to track the fish in the setup, we need feed the video captured fr
 \end{figure}
 %remove matrix, talk about comparing distance traveled/be more specific in labels.
 %put more stuff in here. use more figures, show graphs of number of swaps before and after
+
+The default method that the program uses to determine which fish is which is to assume that the fish closest to their previous positions are the same fish. However, this tends to fail in areas in which either the fish have moved a great distance since the last frame, or the case in which the fish are close enough that the program returns their only being one fish, in which case the program will basically assume which fish is which at random. To combat this we will use several methods. The first of these is distance based unswapping, which works by 
+
 The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check for swaps. This approach works on the regions where there are two fish detected (``nonoverlapping range''), and so we need to confine it to those regions. 
 
 \subsection{Histogram Based Unswapping}
