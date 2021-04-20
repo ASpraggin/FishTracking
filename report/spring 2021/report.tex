@@ -192,16 +192,14 @@ Automatic video tracking has had a major impact on animal behavior studies. One 
 \subsection{Tracking Animal Behaviour}
 While visually pleasing, schooling is a rather challenging topic that has long befuddled animal scientists, due to the fact that to preform proper analysis of the animals' behavior, a vast quantity of positional data is needed. This has been alleviated recently with advances in technology, since scientists can now use computers to track the animals' positions. While this technically was possible before, this would require a person sitting in front of a video manually tracking the positions of each of the animals in question, which is what the program that we are writing aims to eliminate.
 
-%talk about how interested in how schooling came to be? schooling dynamics of related groups can provide insight in to how groups evolved. now talk about trilab studying species that has varients that both do and don't school that are similar.
+%talk about how interested in how schooling came to be? Schooling dynamics of related groups can provide insight in to how groups evolved. Now talk about trilab studying species that has variants that both do and don't school that are similar.
 In particular, the group that this paper gets it's data from is looking at Mexican Tetra (\textit{latin name}) \cite{fishPaper}. One of the quirks of Mexican Tetra is that different groups have startling evolutionary differences such as one of the groups having not evolved schooling, despite being nominally the same species as the ones that did. However, one issue that arises is that it is impractical to quantify fish behavior without automated tracking. As such, this project aims to provide a program that tracks the fish so that the labs can analyse them.
 
-Since fish motion has become so much easier to work with, some groups that were studying the fish are using this opportunity to study the lives and motion of different types of fish in much more detail and with much more data than they were before. One of these is an association of groups out of Jupiter, which are working on Mexican Tetra. These labs, headed by Dr. Keene, Dr. Duboue, and Dr. Kowalko, collectively known as the cavefish trilab, are currently interested in the evolution of behavior of Mexican Tetra, which necessitates a lot of video of the fish. Over the last few years the cavefish trilab has been collaborating with Dr. Fily, to apply physics techniques of collective grouping \cite{trilab-tracker paper}. He has developed a software to track the fish, which is currently in use by the labs, but has the issue with maintaining the identities of the fish throughout the experiment, so this project aims to fix that. Since the trilab is working with video of Tetra, this presented an opportunity to apply these techniques to clean up the video they have produced. 
+Since fish motion has become so much easier to work with, some groups that were studying the fish are using this opportunity to study the lives and motion of different types of fish in much more detail and with much more data than they were before. One of these is an association of groups out of Jupiter, which are working on Mexican Tetra. These labs, headed by Dr. Keene, Dr. Duboue, and Dr. Kowalko, collectively known as the cavefish trilab, are currently interested in the evolution of behavior of Mexican Tetra, which necessitates a lot of video of the fish. Over the last few years the cavefish trilab has been collaborating with Dr. Fily, to apply physics techniques of collective grouping \cite{patch_kinematic_2020}. He has developed a software to track the fish, which is currently in use by the labs, but has the issue with maintaining the identities of the fish throughout the experiment, so this project aims to fix that. Since the trilab is working with video of Tetra, this presented an opportunity to apply these techniques to clean up the video they have produced. 
 
+\subsection{Nature of the problem}
 
-\section{Methods}
-
-\subsection{Nature of the Probelm}
-Before understanding the nature of the problem, we must say a few words about the process. The process starts by picking out the dark spots in the video caused by the contrast between the fish and the light background of the tank.
+Before discussing how to maintain the identity of the fish as we track them, we must first talk a little about how the software locates them. The process starts by picking out the dark spots in the video caused by the contrast between the fish and the light background of the tank. The software then interprets each dark spot as a fish.
 
 \begin{figure}[H]
 	\centering
@@ -210,19 +208,16 @@ Before understanding the nature of the problem, we must say a few words about th
 	\label{fig:fish}
 \end{figure}
 
-% put 3 fig here, uncolored, colored, and swapped, talk about how dark spot identification program doesn't maintain continuity
-% when talking about second method, recreate inkscape image without swap. make image so that solid is start, outline is end? offset fish in inkscape image
+While this works well for determining the positions of objects at any given moment, it needs some extra work to be able to keep the fish straight, since there is no continuity.
 
-Once we have the positions of the fish, we can compare how the fish has moved from frame to frame by comparing the distances between their last known positions. 
-\iffalse
-\begin{figure}
+\begin{figure}[H]
 	\centering
-	\includegraphics[width=.33\linewidth]{}
-	\includegraphics[width=.33\linewidth]{}
-	\includegraphics[width=.33\linewidth]{}
-	\label{A swap occuring}
+	\includegraphics[width=\linewidth]{g1225}
+	\caption{The program doesn't respect continuity}
+	\label{fig:continuity}
 \end{figure}
-\fi
+
+To do this we can compare how the fish have moved by tracking their positions relative to their last known positions on a frame by frame basis.
 
 \begin{figure}[H]
 	\centering
@@ -232,16 +227,16 @@ Once we have the positions of the fish, we can compare how the fish has moved fr
 	\caption{Before and after an overlap}
 \end{figure}
 
-However, we quickly run into the issue that the program doesn't respect continuity. When the program can't figure out which fish is which after an overlap, Figure~\ref{fig:continuity}, it takes a guess based off distances, Figure~\ref{fig:broverlap}, but can get them wrong such as the situation on the right.
+However, this method tends to suffer errors in certain scenarios, such as figure~\ref{fig:overlap}, that make an alternative approach needed. When the program tracks the fish, it normally assigns one fish to be red and the other to be blue. Instead what happens here is that the software only returns one fish which it displays as pink. 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{g1225}
-	\caption{The program doesn't respect continuity}
-	\label{fig:continuity}
+	\includegraphics[width=.5\linewidth]{videoScreenshot}
+	\caption{An instance where the software can't accurately track the fish}
+	\label{fig:overlap}
 \end{figure}
 
-%put fily fig one here?
+The issues can occur in two scenarios, where the fish get close enough that the program returns their only being one fish (figure~\ref{fig:overlap}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
 
 \begin{figure}[H]
 	\centering
@@ -251,39 +246,20 @@ However, we quickly run into the issue that the program doesn't respect continui
 	\label{fig:broverlap}
 \end{figure}
 
-
-If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have. Below we have the fish as it tracks up to an overlap and goes past it, so you can see where the error would occur.
-
-To do this, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of the fish have been confused, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
-
-We can the extend this frame by frame comparison over the regions where the fish are visually distinct. However, in ranges where the positions of the fishes are reported as overlapping, this approach won't work due to the construction of the tracking program. 
-
-\begin{figure}[H]
-	\centering
-	\newlength{\mylen}
-	\setlength{\mylen}{.4\linewidth}
-	\includegraphics[width=.5\linewidth]{fish1}
-	\hspace{.02\linewidth}
-	\includegraphics[height=\mylen]{overlapzoom}
-	\caption{Left: A basic swap check, longer(wrong) distances are in red. Right: An example of an Overlap}
-	\label{fig:overlap_swap}
-\end{figure}
-
-Instead, during these ranges, we have to take the more involved approach of comparing a visually distinctive feature of the fishes from frame to frame.
-
+What this leads to is issues in the end results, since they are in no way accurate due to this massive source of error. To fix this issue, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem\cite{idTracker}. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of the fish have been confused, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
 
 \subsection{Previous work}
-
  
 %reference idtracker/trex for how to talk about previous works, start broader, start with program that isn't able to auto unswap, recently programs came around that tried to automate this, paragraph about trex?
 %\cite all of the papers, cite some of the things that are in the front of the papers, cite papers on mexican cavefish
 %several haveemerged recently, all have upsides and downsides, ideal program depends on usecase
 
-Since this is a problem that is common to all animal tracking behaviors, there have been several attempts to provide tracking solutions as alternatives to manual tracking and unswapping. Of these programs that came before, we are basing our work most heavily on a program called idTracker \cite{idTracker}. The authors of that paper also had the problem of there being no existing programs that could either take over the process of fixing the results outputted by a program without any swap correction, or to track the animals with swap correction. Given that the existing technology of the time relied on taking a video of the fish and then having a person manually do error correction, this was nonideal, expeciallly since this approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which the authors decided would be the fishes intensity map, which was created by taking readings of the brightness of the fish and noting unique spots. The process then compares the identifiers frame by frame, to determine which fish is which. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
+Since this is a problem that is common to all animal tracking behaviors, there have been several attempts to provide tracking solutions as alternatives to manual tracking and unswapping. Of these programs that came before, we are basing our work most heavily on a program called idTracker \cite{idTracker}. The authors of that paper also had the problem of there being no existing programs that could either take over the process of fixing the results outputted by a program without any swap correction, or to track the animals with swap correction. Given that the existing technology of the time relied on taking a video of the fish and then having a person manually do error correction, this was non ideal, especially since this approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which the authors decided would be the fishes intensity map, which was created by taking readings of the brightness of the fish and noting unique spots. The process then compares the identifiers frame by frame, to determine which fish is which. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
 
-One thing to note about this process is that it is in no way unique. Since this is a common problem across all biological diciplines that deal with animals on a small scale, multiple solutions have com forth for resolving this issue. Some of the more notable ones are: idTracker.ai, which is an upgrade to the idTracker program using machine learning; trex (cite trex.run), which is another program that using machine learning; and deeplabcut, which also uses machine learning, but is optimized for posture tracking in animals. These programs are in a position where they are adjacent to what the labs we are working with need, they each have pitfalls that make them nonideal. Most prominently, the labs would prefer not to have to train programs to get accurate results, with the biggest offender of this being deeplabcut, in addition to not wanting to deal with the computationally insensitive nature of machine learning. This is in addition to several of the programs giving poor results when used in test cases due to optimization issues, with trex being the worst culprit for this. Instead the decision was made to create a program that was optimized for use by the labs.
+One thing to note about this process is that it is in no way unique. Since this is a common problem across all biological disciplines that deal with animals on a small scale, multiple solutions have com forth for resolving this issue. Some of the more notable ones are: idTracker.ai, which is an upgrade to the idTracker program using machine learning; trex (cite trex.run), which is another program that using machine learning; and deeplabcut, which also uses machine learning, but is optimized for posture tracking in animals. These programs are in a position where they are adjacent to what the labs we are working with need, they each have pitfalls that make them non ideal. Most prominently, the labs would prefer not to have to train programs to get accurate results, with the biggest offender of this being deeplabcut, in addition to not wanting to deal with the computationally insensitive nature of machine learning. This is in addition to several of the programs giving poor results when used in test cases due to optimization issues, with trex being the worst culprit for this. Instead the decision was made to create a program that was optimized for use by the labs.
 
-\section{Results}
+
+\section{Methods}
 
 \subsection{Video Collection}
 While any actual experimentation on the fish is beyond the scope of this thesis, it is still useful to describe the process of gathering data. The basic setup of the labs we are taking data from is a tank with two fishes in it and a camera trained on them, as seen below.
@@ -306,7 +282,7 @@ This setup produces a video for us to use, of which an example frame is shown be
 %following is over explained
 %say focusing on two fish somewhere
 %expand this section
-Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using trilab-tracker for this(cite https://github.com/yffily/trilab-tracker) since it has been formulated expressly for this purpose, though that program has analysis tools that are not relevant to this program, so we are just using the portion of the program that deals with capturing the image and recognising the fish and performing our own analysis with that data. The tracker works taking the tank as a constant background, and noting that the fish are the only dark spots on the tank. It then returns an array for each of the fish containing a list of the fish's pixels and those pixel's colors. Once we have the fish saved in a format that we can analyze, we are ready to start working on the tracking of the fish. Since each the way we store the data gives each fish an identifier, we then can use those identifiers to analyse the fish.
+Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using cdtracker for this(cite https://github.com/yffily/trilab-tracker) since it has been formulated expressly for this purpose, though that program has analysis tools that are not relevant to this program, so we are just using the portion of the program that deals with capturing the image and recognising the fish and performing our own analysis with that data. The tracker works taking the tank as a constant background, and noting that the fish are the only dark spots on the tank. It then returns an array for each of the fish containing a list of the fish's pixels and those pixel's colors. Once we have the fish saved in a format that we can analyze, we are ready to start working on the tracking of the fish. Since each the way we store the data gives each fish an identifier, we then can use those identifiers to analyse the fish.
 
 The next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
 
@@ -342,44 +318,27 @@ In the overlapping (or regions where one fish is detected), we need an identifie
 	\label{fig:reducedHist}
 \end{figure}
 
+
+\section{Results}
+
 \subsection{Accuracy}
 %\textbf{\textit{show pictures and describe accuracy.}}
 
-One of the first things that I noticed when I compared the results of the unswapping with the manual check was that there was a relatively low accuracy rate. This is probably due to the fish being too uniform, as once we switched to a slightly more accurate fish recognition program, we can expect a slightly more accurate result.
+Without any tuning, the accuracy rate is only ??\%. This is probably due to the fish being too uniform, as once are able to tune the process, we can expect a slightly more accurate result.
 
+%Include accuracy picture here.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{error}
+	\caption{The error of the untuned process}
+\end{figure}
+
+\section{Code?}
 One of the things that quickly becomes apparent is that the fish are present as a series of dark pixels against a white background, which means that we can feed the image of a frame to a different software (in this case trilab-tracker) to generate a list of pixels that compose the fishes for tracking. This software returns the fish as either a pair of arrays for the regions where it detects two fish, and a single array where it detects one fish of the form [frame][fish][xpixels, ypixels][color]. Once we have the fish in an array form for ease of operation, we need to partition the data into sections of overlapping and non overlapping regions so that we can apply different approaches to each. (See appendix \ref{appendix1}.)
 
 Once we have the data sorted into regions, we can begin working on the nonoverlapping ones. The attack for this section is to trackthe distance between the fish to determine if there was a swap, by comparing the on and off axis distances of the two possible positions of the fish. The downside of this approach is that it only works in areas in which the tracker returns that there is two fish, so we will first need to determine what regions are overlapping and nonoverlapping. Once we have these nonoverlapping regions, we can begin performing the swap check. 
 
-\begin{minipage}[c]{\textwidth}
-\begin{lstlisting}[language=Python]
-def swapStatus(pos,i):
-    '''
-    Detect swaps between consecutive frames based on proximity.
-    
-    Input:
-        pos:Postionts. Array with shape (Nframes,Nfish,Ndimensions),
-        i: Frame index. Int.
-    
-    Output:
-        Int. 0 if no swaps, 1 if swapped, 2 if overlapping.
-    '''
-    nFish=pos.shape[1] #Number of fish
-    distanceMatrix=[np.linalg.norm(pos[i+1][0]-pos[i][0]),
-                    np.linalg.norm(pos[i+1][1]-pos[i][1]),
-                    np.linalg.norm(pos[i+1][0]-pos[i][1]),
-                    np.linalg.norm(pos[i+1][1]-pos[i][0])]
-    swapCriteron=(distanceMatrix[0]+distanceMatrix[1])-(distanceMatrix[2]+distanceMatrix[3])
-    if abs(swapCriteron)<1e-10:
-        return 2 #Overlapping
-    elif swapCriteron>0:
-        return 1 #Swapped
-    elif swapCriteron<0:
-        return 0 #Normal
-    else:
-        return -1
-\end{lstlisting}
-\end{minipage}
+
 
 
 Once we have this data for the nonoverlapping ranges, we have to switch approaches for the overlapping regions. Since we can't compare the distances with the software only reporting a single fish, we are forced to use a different technique., we are using the technique of comparing the histograms of the brightness of the fishes before and after an overlapping range, as proposed by the paper on idTracker\cite{idTracker}. The process for this is for us to feed the arrays directly into numpy's histogram2d, which allows us to compute the histograms with a minimal amount of effort other than determining the correct bins. After that we need to manipulate the data slightly so that the histograms are taken as the average over the nonoverlapping regions for more accuracy, and are then saved out for comparison.
@@ -443,6 +402,42 @@ while i2<len(fish):
 print(nonOverlappingRange)
 \end{lstlisting}
 \end{minipage}
+
+\section{Appendix B}
+\label{app:swapStatus}
+
+\begin{minipage}[c]{\textwidth}
+\begin{lstlisting}[language=Python]
+def swapStatus(pos,i):
+    '''
+    Detect swaps between consecutive frames based on proximity.
+    
+    Input:
+        pos:Postionts. Array with shape (Nframes,Nfish,Ndimensions),
+        i: Frame index. Int.
+    
+    Output:
+        Int. 0 if no swaps, 1 if swapped, 2 if overlapping.
+    '''
+    nFish=pos.shape[1] #Number of fish
+    distanceMatrix=[np.linalg.norm(pos[i+1][0]-pos[i][0]),
+                    np.linalg.norm(pos[i+1][1]-pos[i][1]),
+                    np.linalg.norm(pos[i+1][0]-pos[i][1]),
+                    np.linalg.norm(pos[i+1][1]-pos[i][0])]
+    swapCriteron=(distanceMatrix[0]+distanceMatrix[1])-(distanceMatrix[2]+distanceMatrix[3])
+    if abs(swapCriteron)<1e-10:
+        return 2 #Overlapping
+    elif swapCriteron>0:
+        return 1 #Swapped
+    elif swapCriteron<0:
+        return 0 #Normal
+    else:
+        return -1
+\end{lstlisting}
+\end{minipage}
+
+\section{Appendix C}
+\section{Appendix D}
 
 %==========================================================================
 % Bibliography.
