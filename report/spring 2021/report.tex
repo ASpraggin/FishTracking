@@ -282,7 +282,10 @@ This setup produces a video for us to use, of which an example frame is shown be
 %following is over explained
 %say focusing on two fish somewhere
 %expand this section
-Since we need to track the fish in the setup, we need feed the video captured from this setup to the analysis program. In this case we are using cdtracker for this(cite https://github.com/yffily/trilab-tracker) since it has been formulated expressly for this purpose, though that program has analysis tools that are not relevant to this program, so we are just using the portion of the program that deals with capturing the image and recognising the fish and performing our own analysis with that data. The tracker works taking the tank as a constant background, and noting that the fish are the only dark spots on the tank. It then returns an array for each of the fish containing a list of the fish's pixels and those pixel's colors. Once we have the fish saved in a format that we can analyze, we are ready to start working on the tracking of the fish. Since each the way we store the data gives each fish an identifier, we then can use those identifiers to analyse the fish.
+
+To track the fish, we must first feed the video captured from this setup to an analysis program, in our case cdtracker (cite https://github.com/yffily/trilab-tracker), which has been especially created for use by the Jupiter Trilab. This program takes the tank as a preseet constant background, and The
+
+The tracker works taking the tank as a constant background, and noting that the fish are the only dark spots on the tank. It then returns an array for each of the fish containing a list of the fish's pixels and those pixel's colors. Once we have the fish saved in a format that we can analyze, we are ready to start working on the tracking of the fish. Since each the way we store the data gives each fish an identifier, we then can use those identifiers to analyse the fish.
 
 The next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
 
@@ -324,53 +327,21 @@ In the overlapping (or regions where one fish is detected), we need an identifie
 \subsection{Accuracy}
 %\textbf{\textit{show pictures and describe accuracy.}}
 
-Without any tuning, the accuracy rate is only ??\%. This is probably due to the fish being too uniform, as once are able to tune the process, we can expect a slightly more accurate result.
+Without any tuning, the accuracy rate is only 19\%. This is probably due to the fish being too uniform, as once are able to tune the process, we can expect a slightly more accurate result.
 
-%Include accuracy picture here.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{error}
+	\includegraphics[width=\linewidth]{error}
 	\caption{The error of the untuned process}
 \end{figure}
 
+\subsection{Bin Reduction}
+
+One thing that was also tested was what would happen if we used less bins on teh histograms that we used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this opperation was performed.
+
 \section{Code?}
-One of the things that quickly becomes apparent is that the fish are present as a series of dark pixels against a white background, which means that we can feed the image of a frame to a different software (in this case trilab-tracker) to generate a list of pixels that compose the fishes for tracking. This software returns the fish as either a pair of arrays for the regions where it detects two fish, and a single array where it detects one fish of the form [frame][fish][xpixels, ypixels][color]. Once we have the fish in an array form for ease of operation, we need to partition the data into sections of overlapping and non overlapping regions so that we can apply different approaches to each. (See appendix \ref{appendix1}.)
-
-Once we have the data sorted into regions, we can begin working on the nonoverlapping ones. The attack for this section is to trackthe distance between the fish to determine if there was a swap, by comparing the on and off axis distances of the two possible positions of the fish. The downside of this approach is that it only works in areas in which the tracker returns that there is two fish, so we will first need to determine what regions are overlapping and nonoverlapping. Once we have these nonoverlapping regions, we can begin performing the swap check. 
-
-
-
 
 Once we have this data for the nonoverlapping ranges, we have to switch approaches for the overlapping regions. Since we can't compare the distances with the software only reporting a single fish, we are forced to use a different technique., we are using the technique of comparing the histograms of the brightness of the fishes before and after an overlapping range, as proposed by the paper on idTracker\cite{idTracker}. The process for this is for us to feed the arrays directly into numpy's histogram2d, which allows us to compute the histograms with a minimal amount of effort other than determining the correct bins. After that we need to manipulate the data slightly so that the histograms are taken as the average over the nonoverlapping regions for more accuracy, and are then saved out for comparison.
-
-\begin{minipage}[c]{\textwidth}
-\begin{lstlisting}[language=Python]
-for i in tnrange(60,desc='nonOverlappingRange'):
-    for k in range(2):
-        countSum=0
-        countDif=0
-        pairData=[]
-        for j in range(*nonOverlappingRange[i]):
-            fishPixels = fishU[j][k]
-            m,l=np.triu_indices(fishPixels.shape[0],k=1)
-            d=np.sqrt((fishPixels[l,0]-fishPixels[m,0])**2+(fishPixels[l,1]-fishPixels[m,1])**2)
-            bSum=fishPixels[l,2]+fishPixels[m,2]
-            bDif=fishPixels[l,2]-fishPixels[m,2]
-
-            heightValuesSum,_,_=np.histogram2d(d,bSum,bins=(binsDist,binsSum))
-            histSum+=heightValuesSum
-            countSum+=1
-            heightValuesDif,_,_=np.histogram2d(d,bDif,bins=(binsDist,binsDif))
-            histDif+=heightValuesDif
-            countDif+=1
-        histSum/=countSum
-        histSumList[i,k]=histSum.copy()
-        histDif/=countDif
-        histDifList[i,k]=histDif.copy()
-\end{lstlisting}
-\end{minipage}
-
-This produces a histogram, similar to the one seen below.
 
 We can then feed this representation into a simple value comparison to check for swaps. When rendered to a more human readable form, we can either get a list of frames, or a graphs as shown below.
 
@@ -437,7 +408,41 @@ def swapStatus(pos,i):
 \end{minipage}
 
 \section{Appendix C}
+\label{app:dataShape}
+
+The data is stored in an array of shape [frame][fish][xpixels,ypixels][color]
+
+\textit{\textbf{Picture Here}}
+
 \section{Appendix D}
+\label{app:histCreator}
+
+\begin{minipage}[c]{\textwidth}
+\begin{lstlisting}[language=Python]
+for i in tnrange(60,desc='nonOverlappingRange'):
+    for k in range(2):
+        countSum=0
+        countDif=0
+        pairData=[]
+        for j in range(*nonOverlappingRange[i]):
+            fishPixels = fishU[j][k]
+            m,l=np.triu_indices(fishPixels.shape[0],k=1)
+            d=np.sqrt((fishPixels[l,0]-fishPixels[m,0])**2+(fishPixels[l,1]-fishPixels[m,1])**2)
+            bSum=fishPixels[l,2]+fishPixels[m,2]
+            bDif=fishPixels[l,2]-fishPixels[m,2]
+
+            heightValuesSum,_,_=np.histogram2d(d,bSum,bins=(binsDist,binsSum))
+            histSum+=heightValuesSum
+            countSum+=1
+            heightValuesDif,_,_=np.histogram2d(d,bDif,bins=(binsDist,binsDif))
+            histDif+=heightValuesDif
+            countDif+=1
+        histSum/=countSum
+        histSumList[i,k]=histSum.copy()
+        histDif/=countDif
+        histDifList[i,k]=histDif.copy()
+\end{lstlisting}
+\end{minipage}
 
 %==========================================================================
 % Bibliography.
