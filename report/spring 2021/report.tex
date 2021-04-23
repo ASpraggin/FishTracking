@@ -9,8 +9,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{float}
-\usepackage[style=numeric]{biblatex}
-\addbibresource{fish.bib}
+%\usepackage[style=numeric]{biblatex}
+%\addbibresource{fish.bib}
 \usepackage{comment}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -54,14 +54,17 @@
 	{\normalfont\Large\bfseries}}
 \makeatother
 
+\newlength{\mylen}
+
 \begin{document}
 
 %==========================================================================
 %==========================================================================
 % Title pages.
 
-\begin{comment}
-\newcommand{\mytitle}{Report for End of Year on Progress on Fish Tracking Software}
+%\begin{comment}
+\newcommand{\mytitle}{Automatic Fish Tracking: 
+Keeping Track of Who’s Who}
 \newcommand{\myauthor}{Ari Spraggins}
 
 \newcommand{\myskip}{\vspace{0.5in}}
@@ -117,7 +120,7 @@ Dr. Yaouen Fily
 {}[second reader]
 
 \myrule
-Interim Dean Timothy Steigenga, Harriet L. Wilkes Honors College 
+Dean Justin Perry, Harriet L. Wilkes Honors College 
 
 \myrule
 Date
@@ -129,13 +132,13 @@ Date
 %\begin{center}
 %	\layouttitle{Acknowledgements}
 %\end{center}
-\section*{Acknowledgements}
-%\addcontentsline{toc}{section}{Acknowledgements}
-
-\myskip
-Some acknowledgements.
-
-\newpage
+%\section*{Acknowledgements}
+%%\addcontentsline{toc}{section}{Acknowledgements}
+%
+%\myskip
+%Some acknowledgements.
+%
+%\newpage
 
 %==========================================================================
 
@@ -159,28 +162,27 @@ Some acknowledgements.
 
 \myskip
 \doublespace
-\end{comment}
-Automatic video tracking has had a major impact on animal behavior studies. One of the problems with using this to track the positions of animals has been keeping the animals distinct. To solve this problem for groups of fish, we will be using python code to track patterns of brightness as a visual identifier to track the fish using data from the labs of Dr. Keene, Dr. Duboue, and Dr. Kowalko, who all work with Mexican cavefish on the Jupiter campus.
-
-\singlespace
+%\end{comment}
+Automatic video tracking has had a major impact on animal behavior studies. One of the challenges of this technique is keeping track of the identities of the fish, especially when they swim together and exchange positions. In this project we use the python programming language to address this problem for groups of fish. The video data comes from schooling assays performed at FAU's Cavefish Trilab (Dr. Keene, Dr. Duboue, and Dr. Kowalko). The method is inspired by the idTracker animal tracking software: we track patterns of brigthness as a visual identifier of each fish which we then use to detect when the fish swap places.
 \newpage
 
-\begin{comment}
+%\begin{comment}
 %==========================================================================
 
 \tableofcontents
 
-\listoftables
+%\listoftables
 
 \listoffigures
 
 \newpage
 
 %==========================================================================
-\end{comment}
+%\end{comment}
 
 \setlength{\parindent}{1em}
 \pagenumbering{arabic}
+%\singlespace
 
 %==========================================================================
 %==========================================================================
@@ -190,25 +192,61 @@ Automatic video tracking has had a major impact on animal behavior studies. One 
 \section{Introduction}
 
 \subsection{Tracking Animal Behaviour}
-While visually pleasing, schooling is a rather challenging topic that has long befuddled animal scientists, due to the fact that to preform proper analysis of the animals' behavior, a vast quantity of positional data is needed. This has been alleviated recently with advances in technology, since scientists can now use computers to track the animals' positions. While this technically was possible before, this would require a person sitting in front of a video manually tracking the positions of each of the animals in question, which is what the program that we are writing aims to eliminate.
+While visually pleasing, schooling is a rather challenging topic that has long intrigued animal scientists. In order to quantify the animals' behavior, a vast quantity of positional data is needed; more than can be collected by hand. Advances in computer vision technology now make this type of data accessible through computerized video-tracking. Beyond schooling, this allows to quantify a wide variety of behaviors in a very accurate manner.
 
 %talk about how interested in how schooling came to be? Schooling dynamics of related groups can provide insight in to how groups evolved. Now talk about trilab studying species that has variants that both do and don't school that are similar.
-In particular, the group that this paper gets it's data from is looking at Mexican Tetra (\textit{latin name}) \cite{fishPaper}. One of the quirks of Mexican Tetra is that different groups have startling evolutionary differences such as one of the groups having not evolved schooling, despite being nominally the same species as the ones that did. However, one issue that arises is that it is impractical to quantify fish behavior without automated tracking. As such, this project aims to provide a program that tracks the fish so that the labs can analyse them.
+This thesis focuses on tracking the motion of Mexican Tetra fish (\textit{Astyanax mexicanus}). One of the quirks of the Mexican Tetra species is that some of its populations have been living in underground caves for about a million years. There, they have evolved a number of behavioral differences with the populations living on the surface, including the loss of schooling: whereas surface populations of \emph{A. mexicanus} school, cave-adapted ones do not~\cite{kowalko_utilizing_2020}. 
 
-Since fish motion has become so much easier to work with, some groups that were studying the fish are using this opportunity to study the lives and motion of different types of fish in much more detail and with much more data than they were before. One of these is an association of groups out of Jupiter, which are working on Mexican Tetra. These labs, headed by Dr. Keene, Dr. Duboue, and Dr. Kowalko, collectively known as the cavefish trilab, are currently interested in the evolution of behavior of Mexican Tetra, which necessitates a lot of video of the fish. Over the last few years the cavefish trilab has been collaborating with Dr. Fily, to apply physics techniques of collective grouping \cite{patch_kinematic_2020}. He has developed a software to track the fish, which is currently in use by the labs, but has the issue with maintaining the identities of the fish throughout the experiment, so this project aims to fix that. Since the trilab is working with video of Tetra, this presented an opportunity to apply these techniques to clean up the video they have produced. 
+The data used in this thesis comes from experiments performed on campus in the labs of Dr. Keene, Dr. Dubou\'e, and Dr. Kowalko, collectively known as the Cavefish Trilab. The tracking software that the project aims to improve on was developed by Dr. Fily's group for the Cavefish Trilab~\cite{patch_kinematic_2020}. The current version of that software has trouble maintaining the identities of the fish throughout an experiment. The purpose of this work is to fix that issue.
 
 \subsection{Nature of the problem}
 
-Before discussing how to maintain the identity of the fish as we track them, we must first talk a little about how the software locates them. The process starts by picking out the dark spots in the video caused by the contrast between the fish and the light background of the tank. The software then interprets each dark spot as a fish.
+Before discussing how to maintain the identity of the fish as we track them, we must first talk a little about how the software locates them. In each frame of the video, the software identifies regions that are darker than their surrounding. After filtering out dark regions whose size of aspect ratio is inconsistent with a fish, each remaining dark spot is interpreted as a fish. This works well for determining the positions of fish at any given moment, but the identities of the fish can swap (fish 1 becomes fish 2 and vice versa) at any time.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.5\linewidth]{140cropped}
-	\caption{The two fishes}
+	\setlength{\mylen}{0.32\linewidth}
+	\includegraphics[height=\mylen]{140cropped}%
+	\hspace{0.01\linewidth}%
+	\includegraphics[height=\mylen]{simple-swap1}%
+	\hspace{0.01\linewidth}%
+	\includegraphics[height=\mylen]{simple-swap2}
+	\caption{\emph{Left}: Close-up of two fish in their tank. The tank is made of white plastic. Each fish appears as a dark spot. \emph{Middle and Right}: Two consecutive frames of a two-fish video. Fish 1 is highlighted in blue. Fish 2 is highlighted in red. Basic dark spot detection makes no attempt to maintain the color ID of the fish, i.e., the colors can swap at any time.}
 	\label{fig:fish}
 \end{figure}
 
-While this works well for determining the positions of objects at any given moment, it needs some extra work to be able to keep the fish straight, since there is no continuity.
+Many of those identity swaps can be fixed by analyzing the distance traveled by each fish. The videos are shot at 30 frames per second, so fish do not move much from one frame to the next. Therefore, the correct ID of a dark spot can often be obtained by matching each dark spot in the frame to the closest dark spot in the previous frame.
+
+%\begin{figure}[H]
+%	\centering
+%	\setlength{\mylen}{0.32\linewidth}
+%	\includegraphics[height=\mylen]{140cropped}%
+%	\caption{Left: Close-up of two fish in their tank. The tank is made of white plastic. Each fish appears as a dark spot. Middle and Right: Two consecutive frames of a two-fish video. Fish 1 is highlighted in blue. Fish 2 is highlighted in red. Basic dark spot detection makes no attempt to maintain the color ID of the fish, i.e., the colors can swap at any time.}
+%	\label{fig:fish}
+%\end{figure}
+
+However, this does not always work. When the two fish get very close, or when one passes over or under the other, the dark spot detection algorithm only detect a single spot. We call this an overlap event. An example is shown in Figure~\ref{fig:overlap-event}. Eventually, the fish separate and get detection as distinct dark spots again, but the fish identities are lost.
+
+\begin{figure}[H]
+	\centering
+	\setlength{\mylen}{0.32\linewidth}
+	\includegraphics[height=\mylen]{overlap-event1}%
+	\hspace{0.01\linewidth}%
+	\includegraphics[height=\mylen]{overlap-event2}%
+	\hspace{0.01\linewidth}%
+	\includegraphics[height=\mylen]{overlap-event3}
+	\caption{Overlap event. 
+		\emph{Left}: Before the overlap, fish 1 (blue) is on the right and fish 2 (red) is on the left. 
+		\emph{Middle}: During the overlap, the dark spot detection algorithm only detects one object (purple). The identities of the fish are meaningless because the algorithm thinks they are at the exact same place. 
+		\emph{Right}: After the overlap, the fish identities cannot be recovered by analyzing the distance traveled.}
+	\label{fig:overlap-event}
+\end{figure}
+
+
+{\color{red} [YF] Stopping here for now. }
+\clearpage
+%\newpage
+\vspace{1in}
 
 \begin{figure}[H]
 	\centering
@@ -246,7 +284,7 @@ The issues can occur in two scenarios, where the fish get close enough that the 
 	\label{fig:broverlap}
 \end{figure}
 
-What this leads to is issues in the end results, since they are in no way accurate due to this massive source of error. To fix this issue, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem\cite{idTracker}. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of the fish have been confused, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
+What this leads to is issues in the end results, since they are in no way accurate due to this massive source of error. To fix this issue, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem\cite{perez-escudero_idtracker_2014}. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of the fish have been confused, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
 
 \subsection{Previous work}
  
@@ -254,7 +292,7 @@ What this leads to is issues in the end results, since they are in no way accura
 %\cite all of the papers, cite some of the things that are in the front of the papers, cite papers on mexican cavefish
 %several haveemerged recently, all have upsides and downsides, ideal program depends on usecase
 
-Since this is a problem that is common to all animal tracking behaviors, there have been several attempts to provide tracking solutions as alternatives to manual tracking and unswapping. Of these programs that came before, we are basing our work most heavily on a program called idTracker \cite{idTracker}. The authors of that paper also had the problem of there being no existing programs that could either take over the process of fixing the results outputted by a program without any swap correction, or to track the animals with swap correction. Given that the existing technology of the time relied on taking a video of the fish and then having a person manually do error correction, this was non ideal, especially since this approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which the authors decided would be the fishes intensity map, which was created by taking readings of the brightness of the fish and noting unique spots. The process then compares the identifiers frame by frame, to determine which fish is which. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
+Since this is a problem that is common to all animal tracking behaviors, there have been several attempts to provide tracking solutions as alternatives to manual tracking and unswapping. Of these programs that came before, we are basing our work most heavily on a program called idTracker \cite{perez-escudero_idtracker_2014}. The authors of that paper also had the problem of there being no existing programs that could either take over the process of fixing the results outputted by a program without any swap correction, or to track the animals with swap correction. Given that the existing technology of the time relied on taking a video of the fish and then having a person manually do error correction, this was non ideal, especially since this approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which the authors decided would be the fishes intensity map, which was created by taking readings of the brightness of the fish and noting unique spots. The process then compares the identifiers frame by frame, to determine which fish is which. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
 
 One thing to note about this process is that it is in no way unique. Since this is a common problem across all biological disciplines that deal with animals on a small scale, multiple solutions have com forth for resolving this issue. Some of the more notable ones are: idTracker.ai, which is an upgrade to the idTracker program using machine learning; trex (cite trex.run), which is another program that using machine learning; and deeplabcut, which also uses machine learning, but is optimized for posture tracking in animals. These programs are in a position where they are adjacent to what the labs we are working with need, they each have pitfalls that make them non ideal. Most prominently, the labs would prefer not to have to train programs to get accurate results, with the biggest offender of this being deeplabcut, in addition to not wanting to deal with the computationally insensitive nature of machine learning. This is in addition to several of the programs giving poor results when used in test cases due to optimization issues, with trex being the worst culprit for this. Instead the decision was made to create a program that was optimized for use by the labs.
 
@@ -341,7 +379,7 @@ One thing that was also tested was what would happen if we used less bins on teh
 
 \section{Code?}
 
-Once we have this data for the nonoverlapping ranges, we have to switch approaches for the overlapping regions. Since we can't compare the distances with the software only reporting a single fish, we are forced to use a different technique., we are using the technique of comparing the histograms of the brightness of the fishes before and after an overlapping range, as proposed by the paper on idTracker\cite{idTracker}. The process for this is for us to feed the arrays directly into numpy's histogram2d, which allows us to compute the histograms with a minimal amount of effort other than determining the correct bins. After that we need to manipulate the data slightly so that the histograms are taken as the average over the nonoverlapping regions for more accuracy, and are then saved out for comparison.
+Once we have this data for the nonoverlapping ranges, we have to switch approaches for the overlapping regions. Since we can't compare the distances with the software only reporting a single fish, we are forced to use a different technique., we are using the technique of comparing the histograms of the brightness of the fishes before and after an overlapping range, as proposed by the paper on idTracker\cite{perez-escudero_idtracker_2014}. The process for this is for us to feed the arrays directly into numpy's histogram2d, which allows us to compute the histograms with a minimal amount of effort other than determining the correct bins. After that we need to manipulate the data slightly so that the histograms are taken as the average over the nonoverlapping regions for more accuracy, and are then saved out for comparison.
 
 We can then feed this representation into a simple value comparison to check for swaps. When rendered to a more human readable form, we can either get a list of frames, or a graphs as shown below.
 
@@ -447,9 +485,8 @@ for i in tnrange(60,desc='nonOverlappingRange'):
 %==========================================================================
 % Bibliography.
 
-%\printbibliography
-%\bibliographystyle{plain}
-%\bibliography{fish}
+\bibliographystyle{plain}
+\bibliography{fish}
 
 
 \end{document}
