@@ -55,6 +55,8 @@
 \makeatother
 
 \newlength{\mylen}
+\definecolor{darkRed}{rgb}{0.6,0,0}
+\newcommand{\yf}[1]{{\color{darkRed}{#1}}}
 
 \begin{document}
 
@@ -197,11 +199,12 @@ While visually pleasing, schooling is a rather challenging topic that has long i
 %talk about how interested in how schooling came to be? Schooling dynamics of related groups can provide insight in to how groups evolved. Now talk about trilab studying species that has variants that both do and don't school that are similar.
 This thesis focuses on tracking the motion of Mexican Tetra fish (\textit{Astyanax mexicanus}). One of the quirks of the Mexican Tetra species is that some of its populations have been living in underground caves for about a million years. There, they have evolved a number of behavioral differences with the populations living on the surface, including the loss of schooling: whereas surface populations of \emph{A. mexicanus} school, cave-adapted ones do not~\cite{kowalko_utilizing_2020}. 
 
-The data used in this thesis comes from experiments performed on campus in the labs of Dr. Keene, Dr. Dubou\'e, and Dr. Kowalko, collectively known as the Cavefish Trilab. The tracking software that the project aims to improve on was developed by Dr. Fily's group for the Cavefish Trilab~\cite{patch_kinematic_2020}. The current version of that software has trouble maintaining the identities of the fish throughout an experiment. The purpose of this work is to fix that issue.
+The data used in this thesis comes from experiments performed on campus in the labs of Dr. Keene, Dr. Dubou\'e, and Dr. Kowalko, collectively known as the Cavefish Trilab. The tracking software that the project aims to improve on was developed by Dr. Fily's group for the Cavefish Trilab~\cite{patch_kinematic_2020, patch_patchmemorycvtracer_2020}. The current version of that software has trouble maintaining the identities of the fish throughout an experiment. The purpose of this work is to fix that issue.
 
 \subsection{Nature of the problem}
 
-Before discussing how to maintain the identity of the fish as we track them, we must first talk a little about how the software locates them. In each frame of the video, the software identifies regions that are darker than their surrounding. After filtering out dark regions whose size of aspect ratio is inconsistent with a fish, each remaining dark spot is interpreted as a fish. This works well for determining the positions of fish at any given moment, but the identities of the fish can swap (fish 1 becomes fish 2 and vice versa) at any time.
+Before discussing how to maintain the identity of the fish as we track them, we must first talk a little about how the software locates them. Throughout the thesis {\bf we focus on two-fish experiments}. 
+In each frame of the video, the software identifies regions that are darker than their surrounding. After filtering out dark regions whose size of aspect ratio is inconsistent with a fish, each remaining dark spot is interpreted as a fish. This works well for determining the positions of the fish at any given moment, but the identities of the fish can swap (fish 1 becomes fish 2 and vice versa) at any time.
 
 \begin{figure}[H]
 	\centering
@@ -225,8 +228,12 @@ Many of those identity swaps can be fixed by analyzing the distance traveled by 
 %	\label{fig:fish}
 %\end{figure}
 
-However, this does not always work. When the two fish get very close, or when one passes over or under the other, the dark spot detection algorithm only detect a single spot. We call this an overlap event. An example is shown in Figure~\ref{fig:overlap-event}. Eventually, the fish separate and get detection as distinct dark spots again, but the fish identities are lost.
+However, this does not always work. Issues occur in two scenarios. : when the fish get close enough that the program thinks there is only one fish (figure~\ref{fig:overlap}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
 
+
+
+If the fish are near each other and moving fast, then a fish may closer to the previous position of another fish than to its own previous position. In that case, the distance-based method will swap the two fish's identities. 
+If the fish are even closer, or if one is over or under another, the algorithm may only detect a single large dark spot. We call this an overlap event. An example is shown in Figure~\ref{fig:overlap-event}. Eventually, the fish separate and the algorithm detects them as distinct dark spots again, but the fish identities are lost in the process and 
 \begin{figure}[H]
 	\centering
 	\setlength{\mylen}{0.32\linewidth}
@@ -243,107 +250,137 @@ However, this does not always work. When the two fish get very close, or when on
 \end{figure}
 
 
-{\color{red} [YF] Stopping here for now. }
-\clearpage
-%\newpage
-\vspace{1in}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{g1225}
-	\caption{The program doesn't respect continuity}
-	\label{fig:continuity}
-\end{figure}
-
-To do this we can compare how the fish have moved by tracking their positions relative to their last known positions on a frame by frame basis.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.32\linewidth]{5133}
-	\includegraphics[width=.32\linewidth]{5137}
-	\includegraphics[width=.32\linewidth]{5140}
-	\caption{Before and after an overlap}
-\end{figure}
-
-However, this method tends to suffer errors in certain scenarios, such as figure~\ref{fig:overlap}, that make an alternative approach needed. When the program tracks the fish, it normally assigns one fish to be red and the other to be blue. Instead what happens here is that the software only returns one fish which it displays as pink. 
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.5\linewidth]{videoScreenshot}
-	\caption{An instance where the software can't accurately track the fish}
-	\label{fig:overlap}
-\end{figure}
-
-The issues can occur in two scenarios, where the fish get close enough that the program returns their only being one fish (figure~\ref{fig:overlap}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.49\linewidth]{fish3}
-	\includegraphics[width=.49\linewidth]{fish4}
-	\caption{maintained identities (blue) and swapped identities (red) for two scenarios}
-	\label{fig:broverlap}
-\end{figure}
-
-What this leads to is issues in the end results, since they are in no way accurate due to this massive source of error. To fix this issue, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem\cite{perez-escudero_idtracker_2014}. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of the fish have been confused, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
 
 \subsection{Previous work}
- 
+
 %reference idtracker/trex for how to talk about previous works, start broader, start with program that isn't able to auto unswap, recently programs came around that tried to automate this, paragraph about trex?
 %\cite all of the papers, cite some of the things that are in the front of the papers, cite papers on mexican cavefish
 %several haveemerged recently, all have upsides and downsides, ideal program depends on usecase
 
-Since this is a problem that is common to all animal tracking behaviors, there have been several attempts to provide tracking solutions as alternatives to manual tracking and unswapping. Of these programs that came before, we are basing our work most heavily on a program called idTracker \cite{perez-escudero_idtracker_2014}. The authors of that paper also had the problem of there being no existing programs that could either take over the process of fixing the results outputted by a program without any swap correction, or to track the animals with swap correction. Given that the existing technology of the time relied on taking a video of the fish and then having a person manually do error correction, this was non ideal, especially since this approach both had too much error, and that the error tended to compound in on itself over the length of the tracking process. To combat this, the paper proposed a process by which each fish would be given a unique identifier, which the authors decided would be the fishes intensity map, which was created by taking readings of the brightness of the fish and noting unique spots. The process then compares the identifiers frame by frame, to determine which fish is which. We are emulating this process by using a 2d histogram to plot their intensity maps, and using this to compare the frame data.
+Video-tracking software designed with multi-animal experiments in mind typically handle the first type of identity swap described above -- the ones that are fixable by analyzing the distance traveled between frames. Swaps caused by overlap situations are trickier. Some older video-tracking software offer the possibility to fix the animals' tracks by hand after running the automatic tracking. A popular example is the commercial video-tracking software Ethovision, made by Noldus. The downside of this approach is that it is slower. In some cases, fixing all identity swaps by hand can become the most time-consuming part of the project. 
 
-One thing to note about this process is that it is in no way unique. Since this is a common problem across all biological disciplines that deal with animals on a small scale, multiple solutions have com forth for resolving this issue. Some of the more notable ones are: idTracker.ai, which is an upgrade to the idTracker program using machine learning; trex (cite trex.run), which is another program that using machine learning; and deeplabcut, which also uses machine learning, but is optimized for posture tracking in animals. These programs are in a position where they are adjacent to what the labs we are working with need, they each have pitfalls that make them non ideal. Most prominently, the labs would prefer not to have to train programs to get accurate results, with the biggest offender of this being deeplabcut, in addition to not wanting to deal with the computationally insensitive nature of machine learning. This is in addition to several of the programs giving poor results when used in test cases due to optimization issues, with trex being the worst culprit for this. Instead the decision was made to create a program that was optimized for use by the labs.
+In recent years, several new software have come out to address this issue using various strategies.
+
+The one this thesis is most heavily inspired from is idTracker~\cite{perez-escudero_idtracker_2014}. The idea is that each fish has a unique pattern of brighter and darker spots on its body, which can be used to recognize the fish even after loosing its track for a while. To quantify those patterns, the program measures spatial brightness correlations over each fish's body and compare them with previous frames to decide whether an identity swap has occurred. A more recent version of this software, known as idTracker.ai, uses machine learning methods to perform this task.
+
+More recently, TRex~\cite{walter_trex_2021} provides a similar workflow but uses deep-learning methods to identify a visual pattern unique to each fish.
+
+DeepLabCut~\cite{mathis_deeplabcut_2018} also uses deep-learning methods, however it solves a more ambitious problem: tracking multiple points of interest on each animal in order to quantify their posture as well as their position. The trade-off here is that the user has to manually identify the points of interest in several frames across the video, which is a bit more labor-intensive.
+
+
+\subsection{Roadmap}
+
+The goal of this project is to draw from the original idTracker approach to help fix identity swaps in a pre-existing video-tracking code designed for use in Cavefish Trilab: cvtracer~\cite{patch_kinematic_2020, patch_patchmemorycvtracer_2020}.
+
+\yf{[Give a brief overview what's covered in each section of the thesis]}
+
+
+
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=\linewidth]{g1225}
+%	\caption{The program doesn't respect continuity}
+%	\label{fig:continuity}
+%\end{figure}
+
+%The issues can occur in two scenarios, where the fish get close enough that the program returns their only being one fish (figure~\ref{fig:overlap}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
+
+% [This may be better in the results section.]
+%What this leads to is issues in the end results, since they are in no way accurate due to this massive source of error. To fix this issue, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem\cite{perez-escudero_idtracker_2014}. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of the fish have been confused, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
+
 
 
 \section{Methods}
 
 \subsection{Video Collection}
-While any actual experimentation on the fish is beyond the scope of this thesis, it is still useful to describe the process of gathering data. The basic setup of the labs we are taking data from is a tank with two fishes in it and a camera trained on them, as seen below.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.5\linewidth]{experimental_design}
-	\caption{The tank setup}
-\end{figure}
-
+While any actual experimentation on the fish is beyond the scope of this thesis, it is still useful to describe the process of gathering data. The basic setup of the labs we are taking data from is a tank with two fishes in it and a camera trained on them, as seen below. 
 This setup produces a video for us to use, of which an example frame is shown below.
 
+
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.5\linewidth]{figures.frame5140}
-	\caption{An example frame of the video}
+	\setlength{\mylen}{0.35\linewidth}
+	\includegraphics[height=\mylen]{experimental_design}
+	\hspace{0.01\linewidth}
+	\includegraphics[height=\mylen]{figures.frame5140}
+	\caption{\emph{Left}: The tank setup. \emph{Right}: An example frame of the video.}
 \end{figure}
+
 
 \subsection{Current Tracking}
 %following is over explained
 %say focusing on two fish somewhere
 %expand this section
 
-To track the fish, we must first feed the video captured from this setup to an analysis program, in our case cdtracker (cite https://github.com/yffily/trilab-tracker), which has been especially created for use by the Jupiter Trilab. This program takes the tank as a preseet constant background, and The
-
+To track the fish, we must first feed the video captured from this setup to an analysis program, in our case cvtracer~\cite{patch_kinematic_2020, patch_patchmemorycvtracer_2020}, which has been especially created for use by the Jupiter Trilab. 
 The tracker works taking the tank as a constant background, and noting that the fish are the only dark spots on the tank. It then returns an array for each of the fish containing a list of the fish's pixels and those pixel's colors. Once we have the fish saved in a format that we can analyze, we are ready to start working on the tracking of the fish. Since each the way we store the data gives each fish an identifier, we then can use those identifiers to analyse the fish.
 
-The next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.75\linewidth]{oneFish}
-	\caption{Number of one fish regions}
-\end{figure}
+%The next step is to segment the data into regions based on the number of fish it detects. We do this because the distance based unswapping approach doesn't work on regions where there is only one fish detected, so we need to tell the program where it can use that approach.
+%
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=.75\linewidth]{oneFish}
+%	\caption{Number of one fish regions}
+%\end{figure}
 
 
 \subsection{Distance Based Unswapping}
+
+The first and simplest round of identity unswapping works by minimizing the total distance traveled by the fish between the previous frame and the current one. Figure~\ref{fig:distance-unswap-principle} illustrates the way the method works for two fish. The semi-transparent fish indicate each fish's position in the previous frame. In the left panel, identities are maintained, and the distances traveled (double arrows) are small. In the right panel, an identity swap has occurred: in the new frame, the red fish has become blue and vice versa. Because of this swap, each fish appears to have traveled much more distance (double arrows) than it actually has.
+
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{fish2}
-	\caption{Basic overview of unswapping logic}
+	\includegraphics[width=0.4\linewidth]{distance-swap1}
+	\hspace{0.05\linewidth}
+	\includegraphics[width=0.4\linewidth]{distance-swap2}
+	%	\includegraphics[width=.49\linewidth]{fish3}
+	%	\includegraphics[width=.49\linewidth]{fish4}
+	\caption{Distance traveled by the fish between two frames when identities are maintained (left panel) and when identities are swapped (right panel).}
+	\label{fig:distance-unswap-principle}
 \end{figure}
-%remove matrix, talk about comparing distance traveled/be more specific in labels.
-%put more stuff in here. use more figures, show graphs of number of swaps before and after
 
-The default method that the program uses to determine which fish is which is to assume that the fish closest to their previous positions are the same fish. However, this tends to fail in areas in which either the fish have moved a great distance since the last frame, or the case in which the fish are close enough that the program returns their only being one fish, in which case the program will basically assume which fish is which at random. To combat this we will use several methods. The first of these is distance based unswapping, which works by 
+In order to determine whether a swap has occurred, we compute the following distance matrix, which contains all four of the distances shown in the figure:
+%
+\newcommand{\myMatrixItem}[1]{\begin{minipage}[b]{15em}\singlespacing{#1}\end{minipage}}
+\begin{equation}
+	\begin{pmatrix}
+		\text{\myMatrixItem{distance from fish 1 in previous \\ frame to fish 1 in current frame}} 
+			& \text{\myMatrixItem{distance from fish 1 in previous \\ frame to fish 2 in current frame}} 
+		\\
+		\text{\myMatrixItem{distance from fish 2 in previous \\ frame to fish 1 in current frame}} 
+			& \text{\myMatrixItem{distance from fish 2 in previous \\ frame to fish 2 in current frame}} 
+	\end{pmatrix}
+	\nonumber
+\end{equation} 
+%
+The sum of the diagonal terms (previous-1-to-current-1 and previous-2-to-current-2) represents the total distance traveled by both fish since the previous frame assuming identities were maintained. The sum of the two off-diagonal terms (previous-1-to-current-2 and previous-2-to-current-1) represents the total distance traveled by both fish since the previous frame assuming identities were swapped. If the latter is smaller than the former, then we conclude the identities were swapped.
+
+
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=.75\linewidth]{fish2}
+%	\caption{Basic overview of unswapping logic}
+%\end{figure}
+
+
+\subsection{Identifying overlaps}
+
+
+\yf{[YF] Stopping here for now.}
+
+\yf{After this I would first discuss the principle of the histogram method in a frame-to-frame context. Then, possibly in a separate methods subsection, discuss locating the overlaps and averaging the histograms over nonoverlapping ranges for a more accurate/less noisy comparison.}
+
+
+\clearpage
+%\newpage
+\vspace{1in}
+
+
+
+
+
+% [I would discuss the fact that we use 
+%The default method that the program uses to determine which fish is which is to assume that the fish closest to their previous positions are the same fish. However, this tends to fail in areas in which either the fish have moved a great distance since the last frame, or the case in which the fish are close enough that the program returns their only being one fish, in which case the program will basically assume which fish is which at random. To combat this we will use several methods. The first of these is distance based unswapping, which works by 
 
 The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check for swaps. This approach works on the regions where there are two fish detected (``nonoverlapping range''), and so we need to confine it to those regions. 
 
