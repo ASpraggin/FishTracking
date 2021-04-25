@@ -370,24 +370,17 @@ The sum of the diagonal terms (previous-1-to-current-1 and previous-2-to-current
 
 \yf{After this I would first discuss the principle of the histogram method in a frame-to-frame context. Then, possibly in a separate methods subsection, discuss locating the overlaps and averaging the histograms over nonoverlapping ranges for a more accurate/less noisy comparison.}
 
-
 \clearpage
 %\newpage
 \vspace{1in}
 
-
-
-
-
-% [I would discuss the fact that we use 
 %The default method that the program uses to determine which fish is which is to assume that the fish closest to their previous positions are the same fish. However, this tends to fail in areas in which either the fish have moved a great distance since the last frame, or the case in which the fish are close enough that the program returns their only being one fish, in which case the program will basically assume which fish is which at random. To combat this we will use several methods. The first of these is distance based unswapping, which works by 
 
 The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check for swaps. This approach works on the regions where there are two fish detected (``nonoverlapping range''), and so we need to confine it to those regions. 
 
 \subsection{Histogram Based Unswapping}
-In the overlapping (or regions where one fish is detected), we need an identifier for the fish, so we will use bright spots on fish as this identifier. Once we have those identifiers, the easiest way to compare these identifiers is to create histogram of the brightness of the fish. We can then have the program compare the slight differences, because even though look same, they are different enough that the code can pick up the differences. However, one issue that we ran into is that the fish we are using are subpar because they are too uniform in brightness.
 
-%talk about euclidian distance
+Since the distance based approach works in regions where two fish are detected, a second approach is needed for one fish regions. The approach that we decided to work with for these sections was to take a identifier that was unique to each fish, and compare them against each other on a frame by frame basis. The identifier that we chose was the histogram created by taking the brightness of each fish (Appendix~\ref{app:histCreator}), as proposed by idTracker\cite{perez-escudero_idtracker_2014}, which has the advantage of being both one of the most unique things that it is possible to analyze about the fish and being easy to compare given that we can take the euclidean distance between histograms. To create these histograms, we are using numpy's histogram2d, which is ideal for our use case since it can be used directly without any other setup on our part besides determining bins, which we will do later in section~\ref{sec:binReduce}.
 
 \begin{figure}[H]
 	\centering
@@ -396,6 +389,9 @@ In the overlapping (or regions where one fish is detected), we need an identifie
 	\label{fig:reducedHist}
 \end{figure}
 
+\subsection{Averaging Overlaps}
+
+One thing that we did to reduce variability in our answers was to average the regions over which the histograms were taken. By taking the histograms at the beginning and end of the overlapping range, we are able to both 
 
 \section{Results}
 
@@ -411,14 +407,13 @@ Without any tuning, the accuracy rate is only 19\%. This is probably due to the 
 \end{figure}
 
 \subsection{Bin Reduction}
+\label{sec:binReduce}
 
-One thing that was also tested was what would happen if we used less bins on teh histograms that we used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this opperation was performed.
+One thing that was also tested was what would happen if we used less bins on the histograms that we used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this operation was performed. The most difference in accuracy that we were able to observe was 13\%, with that being an outlier considering most reductions were under 9\%, with the vast majority being under 6\%. 
 
 \section{Code?}
 
-Once we have this data for the nonoverlapping ranges, we have to switch approaches for the overlapping regions. Since we can't compare the distances with the software only reporting a single fish, we are forced to use a different technique., we are using the technique of comparing the histograms of the brightness of the fishes before and after an overlapping range, as proposed by the paper on idTracker\cite{perez-escudero_idtracker_2014}. The process for this is for us to feed the arrays directly into numpy's histogram2d, which allows us to compute the histograms with a minimal amount of effort other than determining the correct bins. After that we need to manipulate the data slightly so that the histograms are taken as the average over the nonoverlapping regions for more accuracy, and are then saved out for comparison.
-
-We can then feed this representation into a simple value comparison to check for swaps. When rendered to a more human readable form, we can either get a list of frames, or a graphs as shown below.
+After that we need to manipulate the data slightly so that the histograms are taken as the average over the nonoverlapping regions for more accuracy, and are then saved out for comparison. We can then feed this representation into a simple value comparison to check for swaps. When rendered to a more human readable form, we can either get a list of frames, or a graphs as shown below.
 
 \begin{figure}[H]
 	\centering
