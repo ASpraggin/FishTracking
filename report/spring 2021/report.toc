@@ -9,13 +9,13 @@
 \contentsline {subsection}{\numberline {2.2}Current Tracking}{6}{}%
 \contentsline {subsection}{\numberline {2.3}Distance Based Unswapping}{7}{}%
 \contentsline {subsection}{\numberline {2.4}Identifying overlaps}{8}{}%
-\contentsline {subsection}{\numberline {2.5}Histogram Based Unswapping}{9}{}%
+\contentsline {subsection}{\numberline {2.5}Histogram Based Unswapping}{8}{}%
 \contentsline {subsection}{\numberline {2.6}Averaging Overlaps}{9}{}%
-\contentsline {section}{\numberline {3}Results}{11}{}%
-\contentsline {subsection}{\numberline {3.1}Accuracy}{11}{}%
-\contentsline {subsection}{\numberline {3.2}Bin Reduction}{11}{}%
-\contentsline {section}{\numberline {4}Code?}{12}{}%
-\contentsline {section}{\numberline {A}Appendix A}{13}{}%
-\contentsline {section}{\numberline {B}Appendix B}{15}{}%
-\contentsline {section}{\numberline {C}Appendix C}{16}{}%
-\contentsline {section}{\numberline {D}Appendix D}{18}{}%
+\contentsline {section}{\numberline {3}Results}{10}{}%
+\contentsline {subsection}{\numberline {3.1}Accuracy}{10}{}%
+\contentsline {subsection}{\numberline {3.2}Bin Reduction}{10}{}%
+\contentsline {section}{\numberline {4}Code?}{11}{}%
+\contentsline {section}{\numberline {A}Appendix A}{12}{}%
+\contentsline {section}{\numberline {B}Appendix B}{14}{}%
+\contentsline {section}{\numberline {C}Appendix C}{15}{}%
+\contentsline {section}{\numberline {D}Appendix D}{17}{}%

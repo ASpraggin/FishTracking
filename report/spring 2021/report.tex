@@ -228,7 +228,7 @@ Many of those identity swaps can be fixed by analyzing the distance traveled by 
 %	\label{fig:fish}
 %\end{figure}
 
-However, this does not always work. Issues occur in two scenarios. : when the fish get close enough that the program thinks there is only one fish (figure~\ref{fig:overlap}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
+However, this does not always work. Issues occur in two scenarios. : when the fish get close enough that the program thinks there is only one fish (figure~\ref{fig:overlap-event}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
 
 
 
@@ -366,12 +366,8 @@ The sum of the diagonal terms (previous-1-to-current-1 and previous-2-to-current
 \subsection{Identifying overlaps}
 
 
-\yf{[YF] Stopping here for now.}
+\yf{[YF] Stopping here for now. After this I would first discuss the principle of the histogram method in a frame-to-frame context. Then, possibly in a separate methods subsection, discuss locating the overlaps and averaging the histograms over nonoverlapping ranges for a more accurate/less noisy comparison.}
 
-\yf{After this I would first discuss the principle of the histogram method in a frame-to-frame context. Then, possibly in a separate methods subsection, discuss locating the overlaps and averaging the histograms over nonoverlapping ranges for a more accurate/less noisy comparison.}
-
-\clearpage
-%\newpage
 \vspace{1in}
 
 %The default method that the program uses to determine which fish is which is to assume that the fish closest to their previous positions are the same fish. However, this tends to fail in areas in which either the fish have moved a great distance since the last frame, or the case in which the fish are close enough that the program returns their only being one fish, in which case the program will basically assume which fish is which at random. To combat this we will use several methods. The first of these is distance based unswapping, which works by 
