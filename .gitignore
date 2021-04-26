@@ -24,3 +24,4 @@ report/fall 2020/report.aux
 *.gz
 *.aux
 report/spring 2021/.report.tex.swp
+*.toc
