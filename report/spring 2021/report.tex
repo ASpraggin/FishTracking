@@ -346,33 +346,43 @@ While it would be ideal if the distance based approach could be used for every i
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{reducedHist}
+	\includegraphics[width=\linewidth]{twoHist}
 	\caption{The histograms}
-	\label{fig:reducedHist}
+	\label{fig:singleHist}
 \end{figure}
 
-\subsection{Identifying overlaps}
+\subsection{A basic overview of analyising histograms}
 
-As the histogram based unswapping method only works in time frames of the video in which there are two fish detected, the regions with only one fish detected must be identified so that the correct unswapping method can be used on these regions. The approach that was used for determining these overlapping regions was to comb through the list of the fish in each frame for the amount of fish that the program detected. This was done by using the fact that the program returns a single data point for each fish detected one one of the data's layers, which made determining the amount of fish detected a simple matter of iteration (see~\ref{appendix1}). 
+As the histogram based unswapping method only works in time frames of the video in which there are two fish detected, the regions with only one fish detected must be identified so that the correct unswapping method can be used on these regions (see figure~\ref{fig:nonoverlappingRange}). The approach that was used for determining these overlapping regions was to comb through the list of the fish in each frame for the amount of fish that the program detected. This was done by using the fact that the program returns a single data point for each fish detected one one of the data's layers, which made determining the amount of fish detected a simple matter of iteration (see Appendix~\ref{appendix1}).
 
-\subsection{Averaging Overlaps}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{nonoverlappingRange}
+	\caption{The nonoverlapping ranges}
+	\label{fig:nonoverlappingRange}
+\end{figure}
 
-One thing that we did to reduce variability in our answers was to average the regions over which the histograms were taken. By taking the histograms at the beginning and end of the overlapping range, we are able to both reduce the amount of operations performed on each overlap to just one comparison instead of one per frame, and for us to gain more confidence in our answer due to it being an average of multiple data points.
+Once the overlapping ranges were detected, to reduce variability in our answers we averaged the regions over which the histograms were taken. By taking the histograms at the beginning and end of the overlapping range, we are able to both reduce the amount of operations performed on each overlap to just one comparison instead of one per frame, and for us to gain more confidence in our answer due to it being an average of multiple data points.
 
 \subsection{Determining Accuracy}
 
-When determining how accurate the program is at unswapping the fish, there must be a baseline that the data is compared to. For the purposes of checking the data we had generated, a short segemnt of video was analysed by hand to create a list of each of the fish and wheather or not a swap had happened. This allows us to use a known good basis for comparison, and by comparing the numbers of swaps recorded and their positions, we are able to generate a metric for how accurate our process is.
+When determining how accurate the program is at unswapping the fish, there must be a baseline that the data is compared to. For the purposes of checking the data we had generated, a short segment of video was analysed by hand to create a list of each of the fish and weather or not a swap had happened. This allows us to use a known good basis for comparison, and by comparing the numbers of swaps recorded and their positions, we are able to generate a metric for how accurate our process is.
 
 \section{Results}
 
 \subsection{Distance Based Unswapping}
 
-One thing that is constant about the fish, is their size, which makes the analysis simpler in several regards. Since the length of the fish never goes over 30 pixels, there are two assumptions that this leads us to: that we can 
+One thing that is constant about the fish, is their size, which makes the analysis simpler in several regards. Since the length of the fish never goes over 30 pixels, there are two assumptions that this leads us to: that we can set a minimum distance that any distance between the fish can't be less then, and that it allows us to set a size on the histograms that is constant. This allows us to standardise a bin size by taking this value as the size along one axis and the other axis can be taken by determining the range of values that we can reasonable expect to occur,which can be found by taking sample histograms, and setting it as the maximum of that value.
 %talk about length of fish, how fish are certain length long and distances can't be under 30, talk about how we got to bin width, show one with 4 hist for 2 frames and 2 fish,  
 
-\subsection{Histogram based unswapping/overlaps}
-%picture here
-%move fig 7 here?
+\subsection{Histogram Based Unswapping and Overlap Identification and Reduction}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{reducedHist}
+	\caption{An example histogram}
+	\label{fig:reducedHist}
+\end{figure}
 
 \subsection{Accuracy}
 %\textbf{\textit{show pictures and describe accuracy.}}
@@ -388,22 +398,17 @@ Without any tuning, the error rate is only 19\%. This is probably due to the fis
 \subsection{Bin Reduction}
 \label{sec:binReduce}
 
-One thing that was also tested was what would happen if we used less bins on the histograms that we used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this operation was performed. The most difference in accuracy between the reduced and nonreduced datasets that we were able to observe was 13\%, with that being an outlier considering most reductions were under 9\%, with the vast majority being under 6\%. 
+One thing that was also tested was what would happen if less bins were used on the histograms used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this operation was performed. The most difference in accuracy between the reduced and nonreduced datasets that we were able to observe was 13\%, with that being an outlier considering most reductions were under 9\%, with the vast majority being under 6\%. 
 
 %put fig 5 here, but only with 1st, 3rd, 5th
 %graph of bin width vs error rate
 
 \section{Conclusion}
 
-One problem faced by scientists working on animal tracking tasks is keeping track of which animal is which. To solve this problem for the Jupiter Trilab, we aimed to created a software that detects fish based on a unique identifier. To do this, first we looked at the two types of identity swaps that occur in the original software: a first type that can be fixed by analysing the distance traveled by the fish fram frame to frame, and a second type where the fish are so close to each other that the image recognition software only sees one fish. For the first of these swaps, . For the second of these swaps, we took the visual identifier of the brightness histogram of each fish and used that to determine the fish's identities. These two methods ended up as being rather successful, given that error checking the data against manual error correction led to a reported error rate of 19\%, before any tunign of the parameters. Because the datasets that are being analysed by this program have remarkable amounts of uniformity, it should be fairly simple to drastically reduce this error rate.
-
-
-
-%What was problem, what did we do, how well did we do, what to do in future
-%Before optimization we have sucess rate of , talk about other factors(type of fish(brightness/age of fish skin determines uniqueness),resolution of video, camera has to be zoomed out,color? would it help?),  
+One problem faced by scientists working on animal tracking tasks is keeping track of which animal is which. To solve this problem for the Jupiter Trilab, we aimed to created a software that detects fish based on a unique identifier. To do this, first we looked at the two types of identity swaps that occur in the original software: a first type that can be fixed by analysing the distance traveled by the fish fram frame to frame, and a second type where the fish are so close to each other that the image recognition software only sees one fish. For the first of these swaps, . For the second of these swaps, we took the visual identifier of the brightness histogram of each fish and used that to determine the fish's identities. These two methods ended up as being rather successful, given that error checking the data against manual error correction led to a reported error rate of 19\%, before any tunign of the parameters. Because the datasets that are being analysed by this program have remarkable amounts of uniformity, it should be fairly simple to drastically reduce this error rate. In addition to the software tuning that can be done for more accuracy, and while not something that can be done inside the scope of our current project, modifications can also be made to the data gathering setup, such as increasing the resolution of the video to increase the amount of data that we have to work with, and changing the types of fish given that Mexican Tetra of different ages have different colorations, though that would be something that would have to be worked around for the final release.
 
 \appendix
-\section{Appendix A}
+\section{Locating Nonoverlapping Ranges}
 \label{appendix1}
 
 \begin{minipage}[c]{\textwidth}
@@ -423,7 +428,7 @@ print(nonOverlappingRange)
 \end{lstlisting}
 \end{minipage}
 
-\section{Appendix B}
+\section{Distance Based Swap Checking}
 \label{app:swapStatus}
 
 \begin{lstlisting}[language=Python]
@@ -454,17 +459,22 @@ def swapStatus(pos,i):
         return -1
 \end{lstlisting}
 
-\section{Appendix C}
+\section{Data Shape}
 \label{app:dataShape}
 
 The data is stored in an array of shape [frame][fish][xpixels,ypixels][color]
 
-\textit{\textbf{Picture Here}}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{array}
+	\caption{The shape of the array that holds the data}
+	\label{fig:array}
+\end{figure}
 
-\section{Appendix D}
+
+\section{Histogram Creation}
 \label{app:histCreator}
 
-\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 for i in tnrange(60,desc='nonOverlappingRange'):
     for k in range(2):
@@ -489,7 +499,6 @@ for i in tnrange(60,desc='nonOverlappingRange'):
         histDif/=countDif
         histDifList[i,k]=histDif.copy()
 \end{lstlisting}
-\end{minipage}
 
 %==========================================================================
 % Bibliography.
