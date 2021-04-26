@@ -8,16 +8,14 @@
 \contentsline {subsection}{\numberline {2.1}Video Collection}{6}{}%
 \contentsline {subsection}{\numberline {2.2}Current Tracking}{6}{}%
 \contentsline {subsection}{\numberline {2.3}Distance Based Unswapping}{7}{}%
-\contentsline {subsection}{\numberline {2.4}Histogram Based Unswapping}{8}{}%
-\contentsline {subsection}{\numberline {2.5}A basic overview of analyising histograms}{9}{}%
-\contentsline {subsection}{\numberline {2.6}Determining Accuracy}{10}{}%
-\contentsline {section}{\numberline {3}Results}{11}{}%
-\contentsline {subsection}{\numberline {3.1}Distance Based Unswapping}{11}{}%
-\contentsline {subsection}{\numberline {3.2}Histogram Based Unswapping and Overlap Identification and Reduction}{11}{}%
-\contentsline {subsection}{\numberline {3.3}Accuracy}{11}{}%
-\contentsline {subsection}{\numberline {3.4}Bin Reduction}{12}{}%
-\contentsline {section}{\numberline {4}Conclusion}{13}{}%
-\contentsline {section}{\numberline {A}Locating Nonoverlapping Ranges}{14}{}%
-\contentsline {section}{\numberline {B}Distance Based Swap Checking}{15}{}%
-\contentsline {section}{\numberline {C}Data Shape}{17}{}%
-\contentsline {section}{\numberline {D}Histogram Creation}{18}{}%
+\contentsline {subsection}{\numberline {2.4}Identifying overlaps}{8}{}%
+\contentsline {subsection}{\numberline {2.5}Histogram Based Unswapping}{8}{}%
+\contentsline {subsection}{\numberline {2.6}Averaging Overlaps}{9}{}%
+\contentsline {section}{\numberline {3}Results}{10}{}%
+\contentsline {subsection}{\numberline {3.1}Accuracy}{10}{}%
+\contentsline {subsection}{\numberline {3.2}Bin Reduction}{10}{}%
+\contentsline {section}{\numberline {4}Code?}{11}{}%
+\contentsline {section}{\numberline {A}Appendix A}{12}{}%
+\contentsline {section}{\numberline {B}Appendix B}{14}{}%
+\contentsline {section}{\numberline {C}Appendix C}{15}{}%
+\contentsline {section}{\numberline {D}Appendix D}{17}{}%

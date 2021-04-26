@@ -40,6 +40,13 @@
  
 \lstset{style=mystyle}
 
+%\usepackage[letter,margin=1.5in]{geometry}
+%\addtolength{\rightmargin}{-0.5in}
+%\addtolength{\textwidth}{0.5in}
+%\addtolength{\oddsidemargin}{-.875in}
+%\addtolength{\evensidemargin}{-.875in}
+%\addtolength{\textheight}{1.75in}
+
 \makeatletter
 \renewcommand\section{\clearpage\newpage\@startsection {section}{1}{\z@}%
 	{-3.5ex \@plus -1ex \@minus -.2ex}%
@@ -189,6 +196,7 @@ Automatic video tracking has had a major impact on animal behavior studies. One 
 \subsection{Tracking Animal Behaviour}
 While visually pleasing, schooling is a rather challenging topic that has long intrigued animal scientists. In order to quantify the animals' behavior, a vast quantity of positional data is needed; more than can be collected by hand. Advances in computer vision technology now make this type of data accessible through computerized video-tracking. Beyond schooling, this allows to quantify a wide variety of behaviors in a very accurate manner.
 
+%talk about how interested in how schooling came to be? Schooling dynamics of related groups can provide insight in to how groups evolved. Now talk about trilab studying species that has variants that both do and don't school that are similar.
 This thesis focuses on tracking the motion of Mexican Tetra fish (\textit{Astyanax mexicanus}). One of the quirks of the Mexican Tetra species is that some of its populations have been living in underground caves for about a million years. There, they have evolved a number of behavioral differences with the populations living on the surface, including the loss of schooling: whereas surface populations of \emph{A. mexicanus} school, cave-adapted ones do not~\cite{kowalko_utilizing_2020}. 
 
 The data used in this thesis comes from experiments performed on campus in the labs of Dr. Keene, Dr. Dubou\'e, and Dr. Kowalko, collectively known as the Cavefish Trilab. The tracking software that the project aims to improve on was developed by Dr. Fily's group for the Cavefish Trilab~\cite{patch_kinematic_2020, patch_patchmemorycvtracer_2020}. The current version of that software has trouble maintaining the identities of the fish throughout an experiment. The purpose of this work is to fix that issue.
@@ -220,7 +228,7 @@ Many of those identity swaps can be fixed by analyzing the distance traveled by 
 %	\label{fig:fish}
 %\end{figure}
 
-However, this does not always work. Issues occur in two scenarios: when the fish get close enough that the program thinks there is only one fish (figure~\ref{fig:overlap-event}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
+However, this does not always work. Issues occur in two scenarios. : when the fish get close enough that the program thinks there is only one fish (figure~\ref{fig:overlap-event}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
 
 
 
@@ -245,6 +253,10 @@ If the fish are even closer, or if one is over or under another, the algorithm m
 
 \subsection{Previous work}
 
+%reference idtracker/trex for how to talk about previous works, start broader, start with program that isn't able to auto unswap, recently programs came around that tried to automate this, paragraph about trex?
+%\cite all of the papers, cite some of the things that are in the front of the papers, cite papers on mexican cavefish
+%several haveemerged recently, all have upsides and downsides, ideal program depends on usecase
+
 Video-tracking software designed with multi-animal experiments in mind typically handle the first type of identity swap described above -- the ones that are fixable by analyzing the distance traveled between frames. Swaps caused by overlap situations are trickier. Some older video-tracking software offer the possibility to fix the animals' tracks by hand after running the automatic tracking. A popular example is the commercial video-tracking software Ethovision, made by Noldus. The downside of this approach is that it is slower. In some cases, fixing all identity swaps by hand can become the most time-consuming part of the project. 
 
 In recent years, several new software have come out to address this issue using various strategies.
@@ -255,11 +267,14 @@ More recently, TRex~\cite{walter_trex_2021} provides a similar workflow but uses
 
 DeepLabCut~\cite{mathis_deeplabcut_2018} also uses deep-learning methods, however it solves a more ambitious problem: tracking multiple points of interest on each animal in order to quantify their posture as well as their position. The trade-off here is that the user has to manually identify the points of interest in several frames across the video, which is a bit more labor-intensive.
 
+
 \subsection{Roadmap}
 
 The goal of this project is to draw from the original idTracker approach to help fix identity swaps in a pre-existing video-tracking code designed for use in Cavefish Trilab: cvtracer~\cite{patch_kinematic_2020, patch_patchmemorycvtracer_2020}.
 
 \yf{[Give a brief overview what's covered in each section of the thesis]}
+
+
 
 %\begin{figure}[H]
 %	\centering
@@ -273,11 +288,14 @@ The goal of this project is to draw from the original idTracker approach to help
 % [This may be better in the results section.]
 %What this leads to is issues in the end results, since they are in no way accurate due to this massive source of error. To fix this issue, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem\cite{perez-escudero_idtracker_2014}. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of the fish have been confused, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
 
+
+
 \section{Methods}
 
 \subsection{Video Collection}
 While any actual experimentation on the fish is beyond the scope of this thesis, it is still useful to describe the process of gathering data. The basic setup of the labs we are taking data from is a tank with two fishes in it and a camera trained on them, as seen below. 
 This setup produces a video for us to use, of which an example frame is shown below.
+
 
 \begin{figure}[H]
 	\centering
@@ -288,7 +306,11 @@ This setup produces a video for us to use, of which an example frame is shown be
 	\caption{\emph{Left}: The tank setup. \emph{Right}: An example frame of the video.}
 \end{figure}
 
+
 \subsection{Current Tracking}
+%following is over explained
+%say focusing on two fish somewhere
+%expand this section
 
 To track the fish, we must first feed the video captured from this setup to an analysis program, in our case cvtracer~\cite{patch_kinematic_2020, patch_patchmemorycvtracer_2020}, which has been especially created for use by the Jupiter Trilab. 
 The tracker works taking the tank as a constant background, and noting that the fish are the only dark spots on the tank. It then returns an array for each of the fish containing a list of the fish's pixels and those pixel's colors. Once we have the fish saved in a format that we can analyze, we are ready to start working on the tracking of the fish. Since each the way we store the data gives each fish an identifier, we then can use those identifiers to analyse the fish.
@@ -333,6 +355,7 @@ In order to determine whether a swap has occurred, we compute the following dist
 %
 The sum of the diagonal terms (previous-1-to-current-1 and previous-2-to-current-2) represents the total distance traveled by both fish since the previous frame assuming identities were maintained. The sum of the two off-diagonal terms (previous-1-to-current-2 and previous-2-to-current-1) represents the total distance traveled by both fish since the previous frame assuming identities were swapped. If the latter is smaller than the former, then we conclude the identities were swapped.
 
+
 %\begin{figure}[H]
 %	\centering
 %	\includegraphics[width=.75\linewidth]{fish2}
@@ -340,54 +363,38 @@ The sum of the diagonal terms (previous-1-to-current-1 and previous-2-to-current
 %\end{figure}
 
 
+\subsection{Identifying overlaps}
+
+
+\yf{[YF] Stopping here for now. After this I would first discuss the principle of the histogram method in a frame-to-frame context. Then, possibly in a separate methods subsection, discuss locating the overlaps and averaging the histograms over nonoverlapping ranges for a more accurate/less noisy comparison.}
+
+\vspace{1in}
+
+%The default method that the program uses to determine which fish is which is to assume that the fish closest to their previous positions are the same fish. However, this tends to fail in areas in which either the fish have moved a great distance since the last frame, or the case in which the fish are close enough that the program returns their only being one fish, in which case the program will basically assume which fish is which at random. To combat this we will use several methods. The first of these is distance based unswapping, which works by 
+
+The first approach we tried is taking the positions of the fish and comparing how close they were to their previous positions to check for swaps. This approach works on the regions where there are two fish detected (``nonoverlapping range''), and so we need to confine it to those regions. 
+
 \subsection{Histogram Based Unswapping}
 
-While it would be ideal if the distance based approach could be used for every instance of a swap, unfortunatly a limitation of the approach is that it only works in frame groups where the program detects two fish. As such, a second approach is needed for one fish regions. The approach that was decided on for these sections was to take a identifier that was unique to each fish, and compare them against each other on a frame by frame basis. The identifier that we chose was the histogram created by taking the brightness of each fish (Appendix~\ref{app:histCreator}), as proposed by idTracker\cite{perez-escudero_idtracker_2014}, which has the advantage of being both one of the most unique things that it is possible to analyze about the fish and being easy to compare given that we can take the euclidean distance between histograms. To create these histograms, we are using numpy's histogram2d, which is ideal for our use case since it can be used directly without any other setup on our part besides determining bins, which we will do later in section~\ref{sec:binReduce}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{twoHist}
-	\caption{The histograms}
-	\label{fig:singleHist}
-\end{figure}
-
-\subsection{A basic overview of analyising histograms}
-
-As the histogram based unswapping method only works in time frames of the video in which there are two fish detected, the regions with only one fish detected must be identified so that the correct unswapping method can be used on these regions (see figure~\ref{fig:nonoverlappingRange}). The approach that was used for determining these overlapping regions was to comb through the list of the fish in each frame for the amount of fish that the program detected. This was done by using the fact that the program returns a single data point for each fish detected one one of the data's layers, which made determining the amount of fish detected a simple matter of iteration (see Appendix~\ref{appendix1}).
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{nonoverlappingRange}
-	\caption{The nonoverlapping ranges}
-	\label{fig:nonoverlappingRange}
-\end{figure}
-
-Once the overlapping ranges were detected, to reduce variability in our answers we averaged the regions over which the histograms were taken. By taking the histograms at the beginning and end of the overlapping range, we are able to both reduce the amount of operations performed on each overlap to just one comparison instead of one per frame, and for us to gain more confidence in our answer due to it being an average of multiple data points.
-
-\subsection{Determining Accuracy}
-
-When determining how accurate the program is at unswapping the fish, there must be a baseline that the data is compared to. For the purposes of checking the data we had generated, a short segment of video was analysed by hand to create a list of each of the fish and weather or not a swap had happened. This allows us to use a known good basis for comparison, and by comparing the numbers of swaps recorded and their positions, we are able to generate a metric for how accurate our process is.
-
-\section{Results}
-
-\subsection{Distance Based Unswapping}
-
-One thing that is constant about the fish, is their size, which makes the analysis simpler in several regards. Since the length of the fish never goes over 30 pixels, there are two assumptions that this leads us to: that we can set a minimum distance that any distance between the fish can't be less then, and that it allows us to set a size on the histograms that is constant. This allows us to standardise a bin size by taking this value as the size along one axis and the other axis can be taken by determining the range of values that we can reasonable expect to occur,which can be found by taking sample histograms, and setting it as the maximum of that value.
-%talk about length of fish, how fish are certain length long and distances can't be under 30, talk about how we got to bin width, show one with 4 hist for 2 frames and 2 fish,  
-
-\subsection{Histogram Based Unswapping and Overlap Identification and Reduction}
+Since the distance based approach works in regions where two fish are detected, a second approach is needed for one fish regions. The approach that we decided to work with for these sections was to take a identifier that was unique to each fish, and compare them against each other on a frame by frame basis. The identifier that we chose was the histogram created by taking the brightness of each fish (Appendix~\ref{app:histCreator}), as proposed by idTracker\cite{perez-escudero_idtracker_2014}, which has the advantage of being both one of the most unique things that it is possible to analyze about the fish and being easy to compare given that we can take the euclidean distance between histograms. To create these histograms, we are using numpy's histogram2d, which is ideal for our use case since it can be used directly without any other setup on our part besides determining bins, which we will do later in section~\ref{sec:binReduce}.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{reducedHist}
-	\caption{An example histogram}
+	\caption{The histograms}
 	\label{fig:reducedHist}
 \end{figure}
+
+\subsection{Averaging Overlaps}
+
+One thing that we did to reduce variability in our answers was to average the regions over which the histograms were taken. By taking the histograms at the beginning and end of the overlapping range, we are able to both 
+
+\section{Results}
 
 \subsection{Accuracy}
 %\textbf{\textit{show pictures and describe accuracy.}}
 
-Without any tuning, the error rate is only 19\%. This is probably due to the fish being too uniform, as once are able to tune the process, we can expect a slightly more accurate result.
+Without any tuning, the accuracy rate is only 19\%. This is probably due to the fish being too uniform, as once are able to tune the process, we can expect a slightly more accurate result.
 
 \begin{figure}[H]
 	\centering
@@ -398,17 +405,22 @@ Without any tuning, the error rate is only 19\%. This is probably due to the fis
 \subsection{Bin Reduction}
 \label{sec:binReduce}
 
-One thing that was also tested was what would happen if less bins were used on the histograms used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this operation was performed. The most difference in accuracy between the reduced and nonreduced datasets that we were able to observe was 13\%, with that being an outlier considering most reductions were under 9\%, with the vast majority being under 6\%. 
+One thing that was also tested was what would happen if we used less bins on the histograms that we used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this operation was performed. The most difference in accuracy that we were able to observe was 13\%, with that being an outlier considering most reductions were under 9\%, with the vast majority being under 6\%. 
 
-%put fig 5 here, but only with 1st, 3rd, 5th
-%graph of bin width vs error rate
+\section{Code?}
 
-\section{Conclusion}
+After that we need to manipulate the data slightly so that the histograms are taken as the average over the nonoverlapping regions for more accuracy, and are then saved out for comparison. We can then feed this representation into a simple value comparison to check for swaps. When rendered to a more human readable form, we can either get a list of frames, or a graphs as shown below.
 
-One problem faced by scientists working on animal tracking tasks is keeping track of which animal is which. To solve this problem for the Jupiter Trilab, we aimed to created a software that detects fish based on a unique identifier. To do this, first we looked at the two types of identity swaps that occur in the original software: a first type that can be fixed by analysing the distance traveled by the fish fram frame to frame, and a second type where the fish are so close to each other that the image recognition software only sees one fish. For the first of these swaps, . For the second of these swaps, we took the visual identifier of the brightness histogram of each fish and used that to determine the fish's identities. These two methods ended up as being rather successful, given that error checking the data against manual error correction led to a reported error rate of 19\%, before any tunign of the parameters. Because the datasets that are being analysed by this program have remarkable amounts of uniformity, it should be fairly simple to drastically reduce this error rate. In addition to the software tuning that can be done for more accuracy, and while not something that can be done inside the scope of our current project, modifications can also be made to the data gathering setup, such as increasing the resolution of the video to increase the amount of data that we have to work with, and changing the types of fish given that Mexican Tetra of different ages have different colorations, though that would be something that would have to be worked around for the final release.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{reducedGraph}
+	\caption{The graphs from the histograms}
+	\label{fig:reducedGraph}
+\end{figure}
+
 
 \appendix
-\section{Locating Nonoverlapping Ranges}
+\section{Appendix A}
 \label{appendix1}
 
 \begin{minipage}[c]{\textwidth}
@@ -428,9 +440,10 @@ print(nonOverlappingRange)
 \end{lstlisting}
 \end{minipage}
 
-\section{Distance Based Swap Checking}
+\section{Appendix B}
 \label{app:swapStatus}
 
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 def swapStatus(pos,i):
     '''
@@ -458,23 +471,19 @@ def swapStatus(pos,i):
     else:
         return -1
 \end{lstlisting}
+\end{minipage}
 
-\section{Data Shape}
+\section{Appendix C}
 \label{app:dataShape}
 
 The data is stored in an array of shape [frame][fish][xpixels,ypixels][color]
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{array}
-	\caption{The shape of the array that holds the data}
-	\label{fig:array}
-\end{figure}
+\textit{\textbf{Picture Here}}
 
-
-\section{Histogram Creation}
+\section{Appendix D}
 \label{app:histCreator}
 
+\begin{minipage}[c]{\textwidth}
 \begin{lstlisting}[language=Python]
 for i in tnrange(60,desc='nonOverlappingRange'):
     for k in range(2):
@@ -499,6 +508,7 @@ for i in tnrange(60,desc='nonOverlappingRange'):
         histDif/=countDif
         histDifList[i,k]=histDif.copy()
 \end{lstlisting}
+\end{minipage}
 
 %==========================================================================
 % Bibliography.
