@@ -112,7 +112,7 @@ SUPERVISORY COMMITTEE:
 Dr. Yaouen Fily 
 
 \myrule 
-{}[second reader]
+Prof. Annina Ruest
 
 \myrule
 Dean Justin Perry, Harriet L. Wilkes Honors College 
@@ -340,7 +340,9 @@ The sum of the diagonal terms (previous-1-to-current-1 and previous-2-to-current
 
 \subsection{Histogram Based Unswapping}
 
-While it would be ideal if the distance based approach could be used for every instance of a swap, unfortunately a limitation of the approach is that it only works in frame groups where the program detects two fish. As such, a second approach is needed for one fish regions. The approach that was decided on for these sections was to take a identifier that was unique to each fish, and compare them against each other on a frame by frame basis. The identifier that we chose was the histogram created by taking the brightness of each fish (Appendix~\ref{app:histCreator}), as proposed by idTracker\cite{perez-escudero_idtracker_2014}, which has the advantage of being both one of the most unique things that it is possible to analyze about the fish and being easy to compare given that we can take the euclidean distance between histograms. To create these histograms, we are using numpy's histogram2d, which is ideal for our use case since it can be used directly without any other setup on our part besides determining bins, which we will do later in section~\ref{sec:binReduce}.
+While the two fish overlap, the two fish method no longer works. Following idtracker(||), we use a method that creates a visual signature of each fish using brightness correlation. For each fish, we buidl a 2d histogram that capthures athe lickleyness of finding two pixels at a speific brightness combination and distance from each other(figure~\ref{fig5} To compare two fish from different frames we compare their histograms bin by bin(red arrow), then add up the square of the differences between all of the heights of the bins. In other words, we compute the euclidian diastance between the two histograms.
+	To determine wheather or not a swap has ocured, we computea the same matrix as in the distance based emthod.
+As such, a second approach is needed to recover the fishes identities after an overlap (during which only one shape is detected). Following idTracker(\) the approach that was decided on for these sections was to take a identifier that was unique to each fish, and compare them against each other on a frame by frame basis. The identifier that we chose was the histogram created by taking the comparisons of brightness for each point of each fish (Appendix~\ref{app:histCreator}), as proposed by idTracker\cite{perez-escudero_idtracker_2014}, which has the advantage of being both one of the most unique things that it is possible to analyze about the fish and being easy to compare given that we can take the euclidean distance between histograms. To create these histograms, we are using numpy's histogram2d, which is ideal for our use case since it can be used directly without any other setup on our part besides determining bins, which we will do later in section~\ref{sec:binReduce}.
 
 \begin{figure}[H]
 	\centering
