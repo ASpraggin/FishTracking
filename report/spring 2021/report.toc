@@ -1,23 +1,23 @@
-\contentsline {section}{Abstract}{iii}{}%
-\contentsline {section}{\numberline {1}Introduction}{1}{}%
-\contentsline {subsection}{\numberline {1.1}Tracking Animal Behaviour}{1}{}%
-\contentsline {subsection}{\numberline {1.2}Nature of the problem}{1}{}%
-\contentsline {subsection}{\numberline {1.3}Previous work}{4}{}%
-\contentsline {subsection}{\numberline {1.4}Roadmap}{5}{}%
-\contentsline {section}{\numberline {2}Methods}{6}{}%
-\contentsline {subsection}{\numberline {2.1}Video Collection}{6}{}%
-\contentsline {subsection}{\numberline {2.2}Current Tracking}{6}{}%
-\contentsline {subsection}{\numberline {2.3}Distance Based Unswapping}{7}{}%
-\contentsline {subsection}{\numberline {2.4}Histogram Based Unswapping}{8}{}%
-\contentsline {subsection}{\numberline {2.5}A basic overview of Analysing Histograms}{9}{}%
-\contentsline {subsection}{\numberline {2.6}Determining Accuracy}{10}{}%
-\contentsline {section}{\numberline {3}Results}{11}{}%
-\contentsline {subsection}{\numberline {3.1}Distance Based Unswapping}{11}{}%
-\contentsline {subsection}{\numberline {3.2}Histogram Based Unswapping and Overlap Identification and Reduction}{11}{}%
-\contentsline {subsection}{\numberline {3.3}Accuracy}{12}{}%
-\contentsline {subsection}{\numberline {3.4}Bin Reduction}{12}{}%
-\contentsline {section}{\numberline {4}Conclusion}{13}{}%
-\contentsline {section}{\numberline {A}Locating Nonoverlapping Ranges}{14}{}%
-\contentsline {section}{\numberline {B}Distance Based Swap Checking}{15}{}%
-\contentsline {section}{\numberline {C}Data Shape}{17}{}%
-\contentsline {section}{\numberline {D}Histogram Creation}{18}{}%
+\contentsline {section}{Abstract}{iii}%
+\contentsline {section}{\numberline {1}Introduction}{1}%
+\contentsline {subsection}{\numberline {1.1}Tracking Animal Behaviour}{1}%
+\contentsline {subsection}{\numberline {1.2}Nature of the problem}{1}%
+\contentsline {subsection}{\numberline {1.3}Previous work}{4}%
+\contentsline {subsection}{\numberline {1.4}Roadmap}{5}%
+\contentsline {section}{\numberline {2}Methods}{6}%
+\contentsline {subsection}{\numberline {2.1}Video Collection}{6}%
+\contentsline {subsection}{\numberline {2.2}Current Tracking}{6}%
+\contentsline {subsection}{\numberline {2.3}Distance Based Unswapping}{7}%
+\contentsline {subsection}{\numberline {2.4}Histogram Based Unswapping}{8}%
+\contentsline {subsection}{\numberline {2.5}A Basic Overview of Analysing Histograms}{10}%
+\contentsline {subsection}{\numberline {2.6}Determining Accuracy}{11}%
+\contentsline {section}{\numberline {3}Results}{12}%
+\contentsline {subsection}{\numberline {3.1}Distance Based Unswapping}{12}%
+\contentsline {subsection}{\numberline {3.2}Histogram Based Unswapping and Overlap Identification and Reduction}{12}%
+\contentsline {subsection}{\numberline {3.3}Accuracy}{13}%
+\contentsline {subsection}{\numberline {3.4}Bin Reduction}{13}%
+\contentsline {section}{\numberline {4}Conclusion}{14}%
+\contentsline {section}{\numberline {A}Locating Nonoverlapping Ranges}{15}%
+\contentsline {section}{\numberline {B}Distance Based Swap Checking}{16}%
+\contentsline {section}{\numberline {C}Data Shape}{18}%
+\contentsline {section}{\numberline {D}Histogram Creation}{19}%

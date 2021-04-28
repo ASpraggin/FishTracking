@@ -303,6 +303,7 @@ The tracker works taking the tank as a constant background, and noting that the 
 
 
 \subsection{Distance Based Unswapping}
+\label{sec:Distance Based Unswapping}
 
 The first and simplest round of identity unswapping works by minimizing the total distance traveled by the fish between the previous frame and the current one. Figure~\ref{fig:distance-unswap-principle} illustrates the way the method works for two fish. The semi-transparent fish indicate each fish's position in the previous frame. In the left panel, identities are maintained, and the distances traveled (double arrows) are small. In the right panel, an identity swap has occurred: in the new frame, the red fish has become blue and vice versa. Because of this swap, each fish appears to have traveled much more distance (double arrows) than it actually has.
 
@@ -340,9 +341,18 @@ The sum of the diagonal terms (previous-1-to-current-1 and previous-2-to-current
 
 \subsection{Histogram Based Unswapping}
 
-While the two fish overlap, the two fish method no longer works. Following idtracker(||), we use a method that creates a visual signature of each fish using brightness correlation. For each fish, we buidl a 2d histogram that capthures athe lickleyness of finding two pixels at a speific brightness combination and distance from each other(figure~\ref{fig5} To compare two fish from different frames we compare their histograms bin by bin(red arrow), then add up the square of the differences between all of the heights of the bins. In other words, we compute the euclidian diastance between the two histograms.
-	To determine wheather or not a swap has ocured, we computea the same matrix as in the distance based emthod.
-As such, a second approach is needed to recover the fishes identities after an overlap (during which only one shape is detected). Following idTracker(\) the approach that was decided on for these sections was to take a identifier that was unique to each fish, and compare them against each other on a frame by frame basis. The identifier that we chose was the histogram created by taking the comparisons of brightness for each point of each fish (Appendix~\ref{app:histCreator}), as proposed by idTracker\cite{perez-escudero_idtracker_2014}, which has the advantage of being both one of the most unique things that it is possible to analyze about the fish and being easy to compare given that we can take the euclidean distance between histograms. To create these histograms, we are using numpy's histogram2d, which is ideal for our use case since it can be used directly without any other setup on our part besides determining bins, which we will do later in section~\ref{sec:binReduce}.
+When the two fish overlap, the distance-based method described above no longer works, and a new method is required. Following idTracker~\cite{perez-escudero_idtracker_2014}, we compute a visual signature of each fish based on the brightness correlations. Figure~\ref{fig:brightness-correlation} illustrate the basic principle of the method. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\linewidth]{brightness-correlation}
+	\caption{The histograms}
+	\label{fig:brightness-correlation}
+\end{figure}
+
+It looks at the cumulative brightness of every pair of pixels on a fish's body and computes the chances of finding a specific cumulated brightness at a specific distance. As an example, consider a fish with two bright spots separated by a distance $d$. Then the chance of finding two pixels with a large cumulated brightness and a distance $d$ between them is higher. This translates to a peak in the combined brightness vs distance graph. The location of such peaks can then be used to identify a fish, and ultimately decide whether two fish from different frames are the same fish or not. 
+
+The actual method used in~\cite{perez-escudero_idtracker_2014} and in our code uses a slightly more detailed description of brightness correlations. For each inter-pixel distance, we log not only the average cumulated brightness, but the chances of getting various values of the cumulated brightness. The result is the 2d histogram shown in Figure~\ref{fig:singleHist}.
 
 \begin{figure}[H]
 	\centering
@@ -351,7 +361,25 @@ As such, a second approach is needed to recover the fishes identities after an o
 	\label{fig:singleHist}
 \end{figure}
 
-\subsection{A basic overview of Analysing Histograms}
+The next step is to define the similarity metric to assess whether two 2d brightness histograms are likely to be the same fish or not. To do this, we compare bin heights in the two histograms one bin at a time (red arrow in Figure~\ref{fig:singleHist}). We then add up the squares of all those bin heights and take the square root. In other words, we compute the Euclidean distance between the two histograms.
+
+Finally, we compute the same distance matrix as in section~\ref{sec:Distance Based Unswapping}:
+%\newcommand{\myMatrixItem}[1]{\begin{minipage}[b]{15em}\singlespacing{#1}\end{minipage}}
+\begin{equation}
+	\begin{pmatrix}
+	\text{\myMatrixItem{distance between histogram 1 in previous \\ frame and histogram 1 in current frame}} 
+	& \text{\myMatrixItem{distance between histogram 1 in previous \\ frame and histogram in current frame}} 
+	\\
+	\text{\myMatrixItem{distance between histogram 2 in previous \\ frame and histogram 1 in current frame}} 
+	& \text{\myMatrixItem{distance between histogram 2 in previous \\ frame and histogram 2 in current frame}} 
+	\end{pmatrix}
+	\nonumber
+\end{equation} 
+where \emph{histogram 1} is the 2d histogram computed obtained from fish 1 and \emph{histogram 2} is the one obtained from fish 2.
+As in the distance-based method, if the sum of the diagonal terms is larger than the sum of the off-diagonal terms, we conclude that a swap has occurred.
+
+
+\subsection{A Basic Overview of Analysing Histograms}
 
 As the histogram based unswapping method only works in time frames of the video in which there are two fish detected, the regions with only one fish detected must be identified so that the correct unswapping method can be used on these regions (see figure~\ref{fig:nonoverlappingRange}). The approach that was used for determining these overlapping regions was to comb through the list of the fish in each frame for the amount of fish that the program detected. This was done by using the fact that the program returns a single data point for each fish detected one one of the data's layers, which made determining the amount of fish detected a simple matter of iteration (see Appendix~\ref{appendix1}).
 
