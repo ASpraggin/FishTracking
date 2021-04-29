@@ -343,21 +343,21 @@ The actual method used in~\cite{perez-escudero_idtracker_2014} and in our code u
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{twoHist}
-	\caption{Brightness correlation as a visual identifier of the fish. To decide wheather two histograms are from the same fish, the histograms are compared bin by bin (red arrow), and then these values are added to provide values.}
+	\caption{Brightness correlation as a visual identifier of the fish. To decide whether two histograms are from the same fish, the histograms are compared bin by bin (red arrow), and then these values are added to provide values.}
 	\label{fig:singleHist}
 \end{figure}
 
 The next step is to define the similarity metric to assess whether two 2d brightness histograms are likely to be the same fish or not. To do this, we compare bin heights in the two histograms one bin at a time (red arrow in Figure~\ref{fig:singleHist}). We then add up the squares of all those bin heights and take the square root. In other words, we compute the Euclidean distance between the two histograms.
 
-Finally, we compute the same distance matrix as in section~\ref{sec:Distance Based Unswapping}:
+Finally, we compute the distance matrix as in section~\ref{sec:Distance Based Unswapping}, except the distance is now the distance between the histograms rather than the physical distance between the fish:
 %\newcommand{\myMatrixItem}[1]{\begin{minipage}[b]{15em}\singlespacing{#1}\end{minipage}}
 \begin{equation}
 	\begin{pmatrix}
-	\text{\myMatrixItem{distance between histogram 1 in previous \\ frame and histogram 1 in current frame}} 
-	& \text{\myMatrixItem{distance between histogram 1 in previous \\ frame and histogram in current frame}} 
+	\text{\myMatrixItem{distance between histogram 1 in \\ previous frame and histogram 1 \\ in current frame}} 
+	& \text{\myMatrixItem{distance between histogram 1 in \\ previous frame and histogram 2 \\ in current frame}} 
 	\\
-	\text{\myMatrixItem{distance between histogram 2 in previous \\ frame and histogram 1 in current frame}} 
-	& \text{\myMatrixItem{distance between histogram 2 in previous \\ frame and histogram 2 in current frame}} 
+	\text{\myMatrixItem{distance between histogram 2 in \\ previous frame and histogram 1 \\ in current frame}} 
+	& \text{\myMatrixItem{distance between histogram 2 in \\ previous frame and histogram 2 \\ in current frame}} 
 	\end{pmatrix}
 	\nonumber
 \end{equation} 
@@ -367,7 +367,7 @@ As in the distance-based method, if the sum of the diagonal terms is larger than
 
 \subsection{A Basic Overview of Analysing Histograms}
 
-As the histogram based unswapping method only works in time frames of the video in which there are two fish detected, the regions with only one fish detected must be identified so that the correct unswapping method can be used on these regions (see figure~\ref{fig:nonoverlappingRange}). The approach that was used for determining these overlapping regions was to comb through the list of the fish in each frame for the amount of fish that the program detected. This was done by using the fact that the program returns a single data point for each fish detected one one of the data's layers, which made determining the amount of fish detected a simple matter of iteration (see Appendix~\ref{appendix1}).
+As the histogram based unswapping method only works in time frames of the video in which there are two fish detected, the regions with only one fish detected must be identified so that the histogram unswapping method can be used to reidentify the fish after the overlap (see figure~\ref{fig:nonoverlappingRange}). The approach that was used for determining these overlapping regions was to comb through the list of the fish in each frame for the amount of fish that the program detected (see Appendix~\ref{appendix1}).
 
 \begin{figure}[H]
 	\centering
@@ -376,42 +376,46 @@ As the histogram based unswapping method only works in time frames of the video 
 	\label{fig:nonoverlappingRange}
 \end{figure}
 
-One advantage that the histogram based unswapping method has over the distance based one is that it works over any length of time, instead of frame to frame like the distance based one. Since it makes no sense to unswap during overlap periods, we can use the histogram based method at the beginning and end of the overlap regions to make a single computation that recovers the identities.
+The big advantage of histogram-based unswaps compared to distance-based unswapping is that it can reidentify the fish even after an extended period of time, regardless of the distance traveled by the fish during that time.
 
 \subsection{Determining Accuracy}
 
-One thing that makes the process of how we test our accuracy much easier is that the distance based method has already been proven to work, so we only need to concentrate our efforts on the histogram based unswaps. To test how accurate these swaps were, a baseline manual check was produced. Then we take the percentage of swaps that the program returned that matched the ones from the manual set to get our accuracy value.
+The distance-based method is widely used and known to work well, so we concentrate our efforts on the histogram based unswaps. First, we established the true identities of the fish by hand by watching the video through the first 60 overlaps. The accuracy rate was then obtained by measuring the percentage of overlaps after which the program correctly guessed whether there had been a swap.
 
 \section{Results}
 
-\subsection{Distance Based Unswapping}
+%\subsection{Distance Based Unswapping}
 
-\subsection{Histogram Based Unswapping and Overlap Identification and Reduction}
+%\subsection{Histogram Based Unswapping and Bin Reduction}
+
+The main question when constructing the combined brightness histograms is how to choose the bins. The size of the fish is less than 30 pixels, so the distance between two pixels on the same fish is always smaller than 30 pixels, and the distance bins only need to go up to 30 pixels. That distance, however, can go all the way down to 1 pixel when comparing two neighboring pixels. The range of typical values for the combined brightness (the vertical axis of the histogram) was initially set to $0\rightarrow510$, because individual pixel brightness values are in the range $0\rightarrow255$. This range was then reduced to $150\rightarrow350$ (for brightness sum histogram) or $0\rightarrow50$ (for brightness difference histograms) based on the values actually encountered in the video of interest.
+
+The width of the bins (or equivalently the number of bins) also plays a role. Too many bins increases the noise. Not enough bins makes all fish look the same. To find the ideal bin width, we started with a narrow bin width then produced ``reduced'' histograms by merging bins together as shown in Figure~\ref{fig:reducedHist}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{reducedHist2}
+	\caption{Bin reduction. ``Reduced by a factor of $n$'' means that a square of $n\times n$ original bins were merged to form the new bins.}
+	\label{fig:reducedHist}
+\end{figure}
 
 
-One thing that make our binning easier when constructing the histograms, is that the size of the fish is constant. Since the length of the fish never goes over 30 pixels, there are two assumptions that this leads us to: that we can set a minimum distance that any distance between the fish can't be less then, and that it allows us to set a size on the histograms that is constant. This allows us to standardise a bin size by taking this value as the size along one axis and the other axis can be taken by determining the range of values that we can reasonable expect to occur,which can be found by taking sample histograms, and setting it as the maximum of that value.
 
-\subsection{Accuracy}
-
-Without any tuning, the error rate is only 19\%. This is probably due to the fish being too uniform, as once are able to tune the process, we can expect a slightly more accurate result.
+To find the ideal bin width, we tested several widths and computed the accuracy of each. 
+Figure~\ref{fig:error-rate} shows which overlaps led to a an identity swap (red crosses) and which ones did not (green circles). The upper line shows true swaps as based on identifying the fish by eye. The lower line shows when the histogram-based algorithm detected a swap. The error rate in this case is $19\%$, meaning that in $19\%$ of overlaps the algorithm either thought there was a swap when there wasn't or thought there was no swap when there was.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{error}
 	\caption{The error of the untuned process}
+	\label{fig:error-rate}
 \end{figure}
 
-\subsection{Bin Reduction}
-\label{sec:binReduce}
+Varying the bin size made little difference.
 
-One thing that was also tested was what would happen if less bins were used on the histograms used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this operation was performed. The most difference in accuracy between the reduced and nonreduced datasets that we were able to observe was 13\%, with that being an outlier considering most reductions were under 9\%, with the vast majority being under 6\%. 
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{reducedHist}
-	\caption{An example histogram}
-	\label{fig:reducedHist}
-\end{figure}
+%One thing that was also tested was what would happen if less bins were used on the histograms used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this operation was performed. The most difference in accuracy between the reduced and nonreduced datasets that we were able to observe was 13\%, with that being an outlier considering most reductions were under 9\%, with the vast majority being under 6\%. 
+
 
 \section{Conclusion}
 
