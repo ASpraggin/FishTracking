@@ -257,21 +257,7 @@ DeepLabCut~\cite{mathis_deeplabcut_2018} also uses deep-learning methods, howeve
 
 \subsection{Roadmap}
 
-The goal of this project is to draw from the original idTracker approach to help fix identity swaps in a pre-existing video-tracking code designed for use in Cavefish Trilab: cvtracer~\cite{patch_kinematic_2020, patch_patchmemorycvtracer_2020}.
-
-\yf{[Give a brief overview what's covered in each section of the thesis]}
-
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[width=\linewidth]{g1225}
-%	\caption{The program doesn't respect continuity}
-%	\label{fig:continuity}
-%\end{figure}
-
-%The issues can occur in two scenarios, where the fish get close enough that the program returns their only being one fish (figure~\ref{fig:overlap}), and when the fish move fast enough that they are closer to the other's previous position then their previous position. The first of these issues is the easier of the two to check, since it is fairly trivial to check for regions in which only one fish is reported (please see Appendix~\ref{appendix1}). While it is easy enough to check for the first of these issues, the second is a little tougher. To check for errors in these cases, the distance of each fish from its previous position must be compared to the distance from each fish to the other fishes previous position (Appendix~\ref{app:swapStatus}). If the software mistakes the positions of the fish, which we will refer to as a swap, it will look like the fish traveled longer than it should have.
-
-% [This may be better in the results section.]
-%What this leads to is issues in the end results, since they are in no way accurate due to this massive source of error. To fix this issue, we are applying two approaches in tandem, both a more common naive technique that tends to fail in areas where the fish are close together but is computationally light and works well when the fish are far apart; and a second one of comparing a unique identifier for each fish from moment to moment to find the fish with the same identifier which is much more accurate, but computationally intensive, which we got from the paper on the idTracker program from when they tried to tackle the same problem\cite{perez-escudero_idtracker_2014}. The reason we are using two processes to track the fish is that a common issue of the more common and simpler first method of automatic tracking is that whenever the position of the fish have been confused, the tracker has no way to regain the fishes' position and track which fish is which. To solve this issue, we need a way to track the fish from moment to moment in the cases where this common approach fails, which leads us to the second method.
+The goal of this project is to draw from the original idTracker approach to help fix identity swaps in a pre-existing video-tracking code designed for use in Cavefish Trilab: cvtracer~\cite{patch_kinematic_2020, patch_patchmemorycvtracer_2020}. To do this, we will be covering the two process we use to determine whether or not the fish have been correctly identified depending on how many fish are detected. These two processes are a distance based unswapping method for two fish scenarios, and a histogram based one for one fish scenarios. We will then go over how accurate each of these methods were at giving the fish the correct identity.
 
 \section{Methods}
 
@@ -346,7 +332,7 @@ When the two fish overlap, the distance-based method described above no longer w
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.6\linewidth]{brightness-correlation}
-	\caption{The histograms}
+	\caption{An example of how the brightness map is used to identify the fish}
 	\label{fig:brightness-correlation}
 \end{figure}
 
@@ -357,7 +343,7 @@ The actual method used in~\cite{perez-escudero_idtracker_2014} and in our code u
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{twoHist}
-	\caption{The histograms}
+	\caption{Brightness correlation as a visual identifier of the fish. To decide wheather two histograms are from the same fish, the histograms are compared bin by bin (red arrow), and then these values are added to provide values.}
 	\label{fig:singleHist}
 \end{figure}
 
@@ -390,29 +376,20 @@ As the histogram based unswapping method only works in time frames of the video 
 	\label{fig:nonoverlappingRange}
 \end{figure}
 
-Once the overlapping ranges were detected, to reduce variability in our answers we averaged the regions over which the histograms were taken. By taking the histograms at the beginning and end of the overlapping range, we are able to both reduce the amount of operations performed on each overlap to just one comparison instead of one per frame, and for us to gain more confidence in our answer due to it being an average of multiple data points.
+One advantage that the histogram based unswapping method has over the distance based one is that it works over any length of time, instead of frame to frame like the distance based one. Since it makes no sense to unswap during overlap periods, we can use the histogram based method at the beginning and end of the overlap regions to make a single computation that recovers the identities.
 
 \subsection{Determining Accuracy}
 
-When determining how accurate the program is at unswapping the fish, there must be a baseline that the data is compared to. For the purposes of checking the data we had generated, a short segment of video was analysed by hand to create a list of each of the fish and weather or not a swap had happened. This allows us to use a known good basis for comparison, and by comparing the numbers of swaps recorded and their positions, we are able to generate a metric for how accurate our process is.
+One thing that makes the process of how we test our accuracy much easier is that the distance based method has already been proven to work, so we only need to concentrate our efforts on the histogram based unswaps. To test how accurate these swaps were, a baseline manual check was produced. Then we take the percentage of swaps that the program returned that matched the ones from the manual set to get our accuracy value.
 
 \section{Results}
 
 \subsection{Distance Based Unswapping}
 
-One thing that is constant about the fish, is their size, which makes the analysis simpler in several regards. Since the length of the fish never goes over 30 pixels, there are two assumptions that this leads us to: that we can set a minimum distance that any distance between the fish can't be less then, and that it allows us to set a size on the histograms that is constant. This allows us to standardise a bin size by taking this value as the size along one axis and the other axis can be taken by determining the range of values that we can reasonable expect to occur,which can be found by taking sample histograms, and setting it as the maximum of that value.
-%talk about length of fish, how fish are certain length long and distances can't be under 30, talk about how we got to bin width, show one with 4 hist for 2 frames and 2 fish,  
-
 \subsection{Histogram Based Unswapping and Overlap Identification and Reduction}
 
-The output from the histograms that are produced by the program are shown below. While these are not easily human-readable, they provide an easy waay to perform computations on the fishes.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\linewidth]{reducedHist}
-	\caption{An example histogram}
-	\label{fig:reducedHist}
-\end{figure}
+One thing that make our binning easier when constructing the histograms, is that the size of the fish is constant. Since the length of the fish never goes over 30 pixels, there are two assumptions that this leads us to: that we can set a minimum distance that any distance between the fish can't be less then, and that it allows us to set a size on the histograms that is constant. This allows us to standardise a bin size by taking this value as the size along one axis and the other axis can be taken by determining the range of values that we can reasonable expect to occur,which can be found by taking sample histograms, and setting it as the maximum of that value.
 
 \subsection{Accuracy}
 
@@ -429,8 +406,12 @@ Without any tuning, the error rate is only 19\%. This is probably due to the fis
 
 One thing that was also tested was what would happen if less bins were used on the histograms used for analysis, both to see how it affected accuracy and performance. What was found was that there was no significant change in the accuracy of the data when this operation was performed. The most difference in accuracy between the reduced and nonreduced datasets that we were able to observe was 13\%, with that being an outlier considering most reductions were under 9\%, with the vast majority being under 6\%. 
 
-%put fig 5 here, but only with 1st, 3rd, 5th
-%graph of bin width vs error rate
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{reducedHist}
+	\caption{An example histogram}
+	\label{fig:reducedHist}
+\end{figure}
 
 \section{Conclusion}
 
